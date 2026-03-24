@@ -71,7 +71,7 @@ Message.Assistant("Previous response")
 val result = ollama.chatCompletion(
     model = ModelName.of("llama3.2"),
     messages = listOf(Message.User("Extract data")),
-    responseFormat = ResponseFormat.json
+    format = ResponseFormat.json
 )
 
 // Structured output with JSON schema enforcement
@@ -86,7 +86,7 @@ val schema = mapOf(
 val result = ollama.chatCompletion(
     model = ModelName.of("llama3.2"),
     messages = listOf(Message.User("Extract name and age from: John is 30")),
-    responseFormat = ResponseFormat.Schema(schema)
+    format = ResponseFormat.Schema(schema)
 )
 ```
 
