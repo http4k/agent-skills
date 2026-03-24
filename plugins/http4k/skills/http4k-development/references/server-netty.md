@@ -34,3 +34,5 @@ Netty(8000).toServer(http, ws).start()
 - **No SSE**: Passing an `SseHandler` throws `UnsupportedOperationException("Netty does not support sse")`.
 - **No HTTP/2**: The stock Netty config does not include HTTP/2 codec setup.
 - **Aggregates full request body**: Uses `HttpObjectAggregator(Int.MAX_VALUE)` — the entire request body is buffered in memory before the handler runs.
+- **WebSocket backpressure**: The WebSocket channel handler uses a fixed-capacity buffer (1000 frames). When the buffer is full, auto-read is disabled on the Netty channel (backpressure). Auto-read resumes when the buffer drains below 50%. This prevents memory exhaustion from fast producers.
+- **WebSocket message ordering**: Messages are always buffered and drained with an exclusive lock on the app executor — order is guaranteed even under concurrent frame arrival.

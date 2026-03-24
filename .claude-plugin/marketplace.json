@@ -2,7 +2,7 @@
   "name": "http4k-marketplace",
   "metadata": {
     "description": "AI coding agent skills for the http4k Kotlin HTTP toolkit",
-    "version": "6.35.0.0"
+    "version": "6.36.0.0"
   },
   "owner": {
     "name": "http4k",

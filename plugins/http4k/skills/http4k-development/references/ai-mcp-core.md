@@ -176,6 +176,23 @@ val payload: MyPayload? = myLens(meta)  // nullable — returns null if key abse
 open class MetaField<T : Any>(val key: String)
 ```
 
+## ServerCapabilities Extensions
+
+`ServerCapabilities` and `ClientCapabilities` support a generic `extensions` map for custom capability negotiation (e.g., payment protocols):
+
+```kotlin
+// Add extension data to ServerMetaData
+val metadata = ServerMetaData("MyServer", "1.0.0")
+    .withExtensions(myExtension)  // McpExtension instance
+
+// Or add raw pairs
+val capabilities = ServerCapabilities(...).withExtensions("payment" to mapOf("methods" to listOf("lightning")))
+```
+
+`McpExtension` implementors provide `name` and a config map. They appear in `ServerCapabilities.extensions[name]` during capability negotiation.
+
+`ClientCapabilities` also carries an `extensions` field for client-declared capabilities.
+
 ## ToolFilter (Chaining)
 
 ```kotlin
