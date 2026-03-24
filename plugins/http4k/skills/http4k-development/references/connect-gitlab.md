@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-gitlab
+---
+
 # http4k-connect-gitlab Reference
 
 GitLab client — connect actions for the GitLab REST API.

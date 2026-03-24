@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-netty
+---
+
 # http4k-server-netty Reference
 
 Netty server backend. Supports HTTP and WebSocket. Does NOT support SSE.

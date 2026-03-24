@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-kms
+---
+
 # http4k-connect-amazon-kms Reference
 
 KMS client — connect actions for AWS Key Management Service.

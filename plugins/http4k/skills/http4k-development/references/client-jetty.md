@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-client-jetty
+---
+
 # http4k-client-jetty Reference
 
 Dual sync/async HTTP client backed by Jetty HttpClient. Also provides a WebSocket client.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-client-okhttp
+---
+
 # http4k-client-okhttp Reference
 
 Dual sync/async HTTP client backed by OkHttp. Also provides a WebSocket client.

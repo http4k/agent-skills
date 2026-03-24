@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-security-digest
+---
+
 # http4k-security-digest Reference
 
 HTTP Digest Authentication (RFC 2617) with server and client filters. Supports MD5, QoP auth, nonce tracking, and proxy mode.

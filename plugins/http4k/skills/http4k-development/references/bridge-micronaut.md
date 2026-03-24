@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-bridge-micronaut
+---
+
 # http4k-bridge-micronaut Reference
 
 Bridge http4k handlers into Micronaut as a fallback controller.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-platform-k8s
+---
+
 # http4k-platform-k8s Reference
 
 Kubernetes platform support — dual-port server with health checks for K8s deployments.

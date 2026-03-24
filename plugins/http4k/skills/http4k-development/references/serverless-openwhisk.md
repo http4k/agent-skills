@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-serverless-openwhisk
+---
+
 # http4k-serverless-openwhisk Reference
 
 Apache OpenWhisk adapter. Run http4k apps as OpenWhisk actions.

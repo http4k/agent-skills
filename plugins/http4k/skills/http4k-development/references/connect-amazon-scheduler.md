@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-scheduler
+---
+
 # http4k-connect-amazon-scheduler Reference
 
 Scheduler client — connect actions for Amazon EventBridge Scheduler.

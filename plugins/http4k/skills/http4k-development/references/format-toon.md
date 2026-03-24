@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-toon
+---
+
 # http4k-format-toon Reference
 
 Format module for the Toon format. Wraps Moshi internally for object mapping and converts to/from Toon's text representation.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-instancemetadata
+---
+
 # http4k-connect-amazon-instancemetadata Reference
 
 InstanceMetadataService client — connect actions for the EC2 Instance Metadata Service (IMDS).

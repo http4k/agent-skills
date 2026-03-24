@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-serverless-core
+---
+
 # http4k-serverless-core Reference
 
 Core serverless abstractions. `FnHandler` is `(In, Ctx) -> Out` — the serverless equivalent of `HttpHandler`.

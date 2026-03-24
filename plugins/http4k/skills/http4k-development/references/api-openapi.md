@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-api-openapi
+---
+
 # http4k-api-openapi Reference
 
 Contract-driven API definition with automatic OpenAPI specification generation. Routes declare their parameters, request/response bodies, and security — http4k validates inputs and generates the spec.

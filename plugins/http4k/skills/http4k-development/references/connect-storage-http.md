@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-storage-http
+---
+
 # http4k-connect-storage-http Reference
 
 HTTP-backed `Storage<T>` implementation — delegates all operations to a remote HTTP server.

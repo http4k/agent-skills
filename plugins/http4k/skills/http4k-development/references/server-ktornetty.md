@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-ktornetty
+---
+
 # http4k-server-ktornetty Reference
 
 Ktor with Netty engine server backend. HTTP only — no WebSocket or SSE.

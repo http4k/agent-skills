@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-evidently-fake
+---
+
 # http4k-connect-amazon-evidently-fake Reference
 
 In-memory fake Evidently server for testing.

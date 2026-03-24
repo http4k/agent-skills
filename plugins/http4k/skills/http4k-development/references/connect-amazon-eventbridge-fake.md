@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-eventbridge-fake
+---
+
 # http4k-connect-amazon-eventbridge-fake Reference
 
 In-memory fake EventBridge server for testing event publishing.

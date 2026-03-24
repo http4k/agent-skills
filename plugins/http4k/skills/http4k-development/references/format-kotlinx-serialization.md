@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-kotlinx-serialization
+---
+
 # http4k-format-kotlinx-serialization Reference
 
 JSON format module backed by Kotlin's official `kotlinx.serialization` library. Provides auto-marshalling and JSON node manipulation with `JsonElement`.

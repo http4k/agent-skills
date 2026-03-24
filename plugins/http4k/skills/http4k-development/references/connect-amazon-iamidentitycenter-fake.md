@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-iamidentitycenter-fake
+---
+
 # http4k-connect-amazon-iamidentitycenter-fake Reference
 
 In-memory fakes for IAM Identity Center: `FakeSSO` and `FakeOIDC`.

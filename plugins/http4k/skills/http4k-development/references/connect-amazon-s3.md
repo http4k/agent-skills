@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-s3
+---
+
 # http4k-connect-amazon-s3 Reference
 
 S3 client — connect actions for Amazon S3 object storage.

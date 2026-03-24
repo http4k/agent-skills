@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-systemsmanager-fake
+---
+
 # http4k-connect-amazon-systemsmanager-fake Reference
 
 In-memory fake Systems Manager Parameter Store for testing.

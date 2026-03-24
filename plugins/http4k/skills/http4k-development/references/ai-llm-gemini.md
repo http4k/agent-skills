@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ai-llm-gemini
+---
+
 # http4k-ai-llm-gemini Reference
 
 Google Gemini provider for http4k LLM interfaces.

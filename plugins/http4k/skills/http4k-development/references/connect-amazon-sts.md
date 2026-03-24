@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-sts
+---
+
 # http4k-connect-amazon-sts Reference
 
 STS client — assume IAM roles and exchange credentials.

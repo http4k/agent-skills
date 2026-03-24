@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-realtime-core
+---
+
 # http4k-realtime-core Reference
 
 WebSocket and Server-Sent Events (SSE) support. Follows the same "function" pattern as HTTP.

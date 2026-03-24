@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-firehose
+---
+
 # http4k-connect-amazon-firehose Reference
 
 Firehose client — connect actions for Amazon Kinesis Data Firehose.

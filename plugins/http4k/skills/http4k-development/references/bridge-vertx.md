@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-bridge-vertx
+---
+
 # http4k-bridge-vertx Reference
 
 Bridge http4k handlers into Vert.x.

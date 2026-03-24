@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-platform-gcp
+---
+
 # http4k-platform-gcp Reference
 
 GCP platform integration — HTTP transport adapter for Google API client libraries.

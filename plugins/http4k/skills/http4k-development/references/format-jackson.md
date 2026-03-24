@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-jackson
+---
+
 # http4k-format-jackson Reference
 
 JSON format module backed by Jackson. The most feature-rich format module — supports auto-marshalling, JSON node manipulation, views, CloudEvents, and data4k integration.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-kafka-rest-fake
+---
+
 # http4k-connect-kafka-rest-fake Reference
 
 In-memory fake Kafka REST Proxy server for testing.

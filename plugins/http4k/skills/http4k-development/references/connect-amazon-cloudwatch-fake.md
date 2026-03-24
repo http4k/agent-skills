@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-cloudwatch-fake
+---
+
 # http4k-connect-amazon-cloudwatch-fake Reference
 
 In-memory fake CloudWatch server for testing metrics and alarms.

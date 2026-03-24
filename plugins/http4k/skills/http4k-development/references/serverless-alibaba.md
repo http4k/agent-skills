@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-serverless-alibaba
+---
+
 # http4k-serverless-alibaba Reference
 
 Alibaba Cloud Functions adapter. Run http4k apps as Alibaba Cloud HTTP or event functions.

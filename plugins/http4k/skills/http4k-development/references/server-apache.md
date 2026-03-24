@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-apache
+---
+
 # http4k-server-apache Reference
 
 Apache HttpComponents 5.x server backend. HTTP only — no WebSocket or SSE.

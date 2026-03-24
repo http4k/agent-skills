@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-evidently
+---
+
 # http4k-connect-amazon-evidently Reference
 
 Evidently client — connect actions for Amazon CloudWatch Evidently (A/B testing and feature flags).

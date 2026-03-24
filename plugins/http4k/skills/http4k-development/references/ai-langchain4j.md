@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ai-langchain4j
+---
+
 # http4k-ai-langchain4j Reference
 
 LangChain4j integration — use http4k as the HTTP client for LangChain4j models.

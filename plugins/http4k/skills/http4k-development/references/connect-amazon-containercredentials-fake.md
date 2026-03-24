@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-containercredentials-fake
+---
+
 # http4k-connect-amazon-containercredentials-fake Reference
 
 In-memory fake container credentials endpoint for testing ECS/EKS credential flows.

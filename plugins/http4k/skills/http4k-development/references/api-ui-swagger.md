@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-api-ui-swagger
+---
+
 # http4k-api-ui-swagger Reference
 
 Serves Swagger UI from locally-bundled webjars. Returns a `RoutingHttpHandler` that serves the interactive API documentation UI.

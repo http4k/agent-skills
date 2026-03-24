@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-ai-mcp-mpp
+---
+
 # http4k-ai-mcp-mpp Reference
 
 MCP-level Machine Payments Protocol integration — add payment authentication to MCP tools and servers. Two levels of enforcement: protocol-level (entire MCP session) and tool-level (per tool).

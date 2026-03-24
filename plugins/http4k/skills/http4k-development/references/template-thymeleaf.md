@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-template-thymeleaf
+---
+
 # http4k-template-thymeleaf Reference
 
 Thymeleaf template engine integration.

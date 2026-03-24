@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-cloudwatchlogs-fake
+---
+
 # http4k-connect-amazon-cloudwatchlogs-fake Reference
 
 In-memory fake CloudWatch Logs server for testing.

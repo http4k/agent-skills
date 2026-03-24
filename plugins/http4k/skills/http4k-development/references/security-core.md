@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-security-core
+---
+
 # http4k-security-core Reference
 
 Core security abstractions. `Security` is a `Filter` — compose security policies with `.and()` (all must pass) and `.or()` (first success wins).

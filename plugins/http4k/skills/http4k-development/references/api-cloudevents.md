@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-api-cloudevents
+---
+
 # http4k-api-cloudevents Reference
 
 CNCF CloudEvents support for http4k. Read and write CloudEvents from HTTP messages with automatic structured/binary encoding detection.

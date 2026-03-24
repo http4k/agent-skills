@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-storage-core
+---
+
 # http4k-connect-storage-core Reference
 
 Generic key-value storage abstraction with in-memory and disk implementations.

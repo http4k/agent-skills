@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-iamidentitycenter
+---
+
 # http4k-connect-amazon-iamidentitycenter Reference
 
 IAM Identity Center client — two clients in one module: SSO for credential federation and OIDC for device authorization.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-api-jsonschema
+---
+
 # http4k-api-jsonschema Reference
 
 JSON Schema generation from Kotlin objects or raw JSON nodes. Used internally by the OpenAPI contract renderer but also usable standalone.

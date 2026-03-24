@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-storage-redis
+---
+
 # http4k-connect-storage-redis Reference
 
 Redis-backed `Storage<T>` with TTL support, using Lettuce client.

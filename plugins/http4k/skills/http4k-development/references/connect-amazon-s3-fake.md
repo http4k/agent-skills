@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-s3-fake
+---
+
 # http4k-connect-amazon-s3-fake Reference
 
 In-memory fake S3 server for testing.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ai-llm-openai
+---
+
 # http4k-ai-llm-openai Reference
 
 OpenAI provider for http4k LLM interfaces.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-route53
+---
+
 # http4k-connect-amazon-route53 Reference
 
 Route53 client — connect actions for Amazon Route 53 DNS management.

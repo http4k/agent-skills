@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-moshi-yaml
+---
+
 # http4k-format-moshi-yaml Reference
 
 YAML format module backed by Moshi (for object mapping) and SnakeYAML (for YAML parsing/formatting). Two-step conversion: YAML ↔ JSON ↔ typed objects.

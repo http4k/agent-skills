@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-bridge-ratpack
+---
+
 # http4k-bridge-ratpack Reference
 
 Bridge http4k handlers into Ratpack.

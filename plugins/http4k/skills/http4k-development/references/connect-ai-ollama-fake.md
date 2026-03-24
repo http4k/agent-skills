@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-ai-ollama-fake
+---
+
 # http4k-connect-ai-ollama-fake Reference
 
 In-memory fake Ollama server for testing.

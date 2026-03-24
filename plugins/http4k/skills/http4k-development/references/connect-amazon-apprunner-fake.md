@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-apprunner-fake
+---
+
 # http4k-connect-amazon-apprunner-fake Reference
 
 In-memory fake App Runner server for testing service management flows.

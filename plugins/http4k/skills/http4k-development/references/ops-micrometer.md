@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ops-micrometer
+---
+
 # http4k-ops-micrometer Reference
 
 Micrometer metrics integration. Timer and counter filters for server and client HTTP transactions.

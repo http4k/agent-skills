@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ai-llm-anthropic
+---
+
 # http4k-ai-llm-anthropic Reference
 
 Anthropic (Claude) provider for http4k LLM interfaces.

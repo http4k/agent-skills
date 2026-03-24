@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-apprunner
+---
+
 # http4k-connect-amazon-apprunner Reference
 
 AppRunner client — connect actions for AWS App Runner container services.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ai-llm-azure
+---
+
 # http4k-ai-llm-azure Reference
 
 Azure OpenAI provider for http4k LLM interfaces.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-serverless-lambda
+---
+
 # http4k-serverless-lambda Reference
 
 AWS Lambda adapters. Run http4k apps on API Gateway (V1, V2, REST), Application Load Balancer, or direct invocation.

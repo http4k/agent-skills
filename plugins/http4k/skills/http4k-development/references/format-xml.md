@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-xml
+---
+
 # http4k-format-xml Reference
 
 XML format module using `org.json.XML` for parsing and `javax.xml` for DOM manipulation. Works with W3C `Document` objects and provides XXE-safe parsing by default.

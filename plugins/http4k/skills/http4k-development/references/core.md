@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-core
+---
+
 # http4k-core Reference
 
 The foundation module. Provides `HttpHandler`, `Filter`, `Request`, `Response`, routing, lenses, events, and the built-in `SunHttp` server.

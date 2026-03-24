@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-route53-fake
+---
+
 # http4k-connect-amazon-route53-fake Reference
 
 In-memory fake Route 53 server for testing DNS management flows.

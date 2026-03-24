@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-strikt
+---
+
 # http4k-testing-strikt Reference
 
 Strikt assertion extensions for http4k types. Fluent property-chain style assertions.

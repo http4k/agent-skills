@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-client-apache4-async
+---
+
 # http4k-client-apache4-async Reference
 
 Async-only HTTP client backed by Apache HttpAsyncClient 4.x.

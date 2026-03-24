@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-sns
+---
+
 # http4k-connect-amazon-sns Reference
 
 SNS client — connect actions for Amazon Simple Notification Service.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-client-fuel
+---
+
 # http4k-client-fuel Reference
 
 Dual sync/async HTTP client backed by the Fuel library.

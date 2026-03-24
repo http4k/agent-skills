@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-websocket
+---
+
 # http4k-server-websocket Reference
 
 Standalone Java-WebSocket server backend. WebSocket ONLY — no HTTP or SSE.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-google-analytics-ua
+---
+
 # http4k-connect-google-analytics-ua Reference
 
 Google Analytics Universal Analytics client — connect actions for GA UA Measurement Protocol.

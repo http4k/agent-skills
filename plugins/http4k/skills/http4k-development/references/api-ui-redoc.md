@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-api-ui-redoc
+---
+
 # http4k-api-ui-redoc Reference
 
 Serves Redoc from locally-bundled webjars. Returns a `RoutingHttpHandler` that serves the API documentation UI.

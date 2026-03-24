@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-cognito-fake
+---
+
 # http4k-connect-amazon-cognito-fake Reference
 
 In-memory fake Cognito server for testing authentication flows.

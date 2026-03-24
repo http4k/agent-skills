@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-argo
+---
+
 # http4k-format-argo Reference
 
 JSON node manipulation module backed by the Argo library. Implements `Json<JsonNode>` only — no auto-marshalling of typed objects.

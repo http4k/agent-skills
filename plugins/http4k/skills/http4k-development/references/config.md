@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-config
+---
+
 # http4k-config Reference
 
 Type-safe configuration from environment variables, property files, YAML, and JVM properties.

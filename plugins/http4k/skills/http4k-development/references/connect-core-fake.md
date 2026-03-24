@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-core-fake
+---
+
 # http4k-connect-core-fake Reference
 
 Testing support for http4k-connect — base classes for building fakes with chaos support.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-bridge-jakarta
+---
+
 # http4k-bridge-jakarta Reference
 
 Bridge http4k handlers into Jakarta Servlet containers (Java EE 9+) and JAX-RS resources.

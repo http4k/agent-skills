@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-ses
+---
+
 # http4k-connect-amazon-ses Reference
 
 SES client — connect actions for Amazon Simple Email Service.

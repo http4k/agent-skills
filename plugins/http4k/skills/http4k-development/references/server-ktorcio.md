@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-ktorcio
+---
+
 # http4k-server-ktorcio Reference
 
 Ktor CIO (Coroutine I/O) server backend. HTTP only — no WebSocket or SSE.

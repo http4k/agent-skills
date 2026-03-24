@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ai-llm-core
+---
+
 # http4k-ai-llm-core Reference
 
 Core LLM interfaces and types for chat, streaming, image generation, tools, and memory.

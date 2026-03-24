@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-jackson-yaml
+---
+
 # http4k-format-jackson-yaml Reference
 
 YAML format module backed by Jackson's `jackson-dataformat-yaml`. Serializes/deserializes Kotlin types to/from YAML.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-web-datastar
+---
+
 # http4k-web-datastar Reference
 
 Datastar (hypermedia framework) integration — SSE-based DOM patching and signal updates.

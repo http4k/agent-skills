@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-ai-azure
+---
+
 # http4k-connect-ai-azure Reference
 
 Azure OpenAI Service client — connect actions for Azure-hosted OpenAI models.

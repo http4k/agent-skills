@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-bridge-spring
+---
+
 # http4k-bridge-spring Reference
 
 Bridge http4k handlers into Spring MVC as a fallback controller.

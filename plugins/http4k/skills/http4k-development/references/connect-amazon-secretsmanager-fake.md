@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-secretsmanager-fake
+---
+
 # http4k-connect-amazon-secretsmanager-fake Reference
 
 In-memory fake Secrets Manager server for testing.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-undertow
+---
+
 # http4k-server-undertow Reference
 
 Undertow server backend. Supports HTTP, WebSocket, and SSE.

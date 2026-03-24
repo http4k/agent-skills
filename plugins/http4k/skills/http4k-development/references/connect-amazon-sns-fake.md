@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-sns-fake
+---
+
 # http4k-connect-amazon-sns-fake Reference
 
 In-memory fake SNS server for testing.

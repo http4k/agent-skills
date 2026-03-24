@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-ai-langchain
+---
+
 # http4k-connect-ai-langchain Reference
 
 Bridge between http4k connect clients and LangChain4j — use http4k as the HTTP transport for LangChain4j models.

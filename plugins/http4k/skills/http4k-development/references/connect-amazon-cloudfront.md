@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-cloudfront
+---
+
 # http4k-connect-amazon-cloudfront Reference
 
 CloudFront client — connect actions for Amazon CloudFront CDN.

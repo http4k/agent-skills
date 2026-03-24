@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-connect-x402
+---
+
 # http4k-connect-x402 Reference
 
 HTTP 402 Payment Required protocol support — payment-gated API access using cryptocurrency.

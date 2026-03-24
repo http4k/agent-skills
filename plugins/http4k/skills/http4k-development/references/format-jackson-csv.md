@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-jackson-csv
+---
+
 # http4k-format-jackson-csv Reference
 
 CSV format module backed by Jackson's `jackson-dataformat-csv`. Works with lists of typed objects and CSV schemas.

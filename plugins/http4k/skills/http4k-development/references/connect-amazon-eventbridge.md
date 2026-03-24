@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-eventbridge
+---
+
 # http4k-connect-amazon-eventbridge Reference
 
 EventBridge client — connect actions for Amazon EventBridge event bus.

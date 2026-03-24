@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-client-apache
+---
+
 # http4k-client-apache Reference
 
 Synchronous HTTP client backed by Apache HttpClient 5.x.

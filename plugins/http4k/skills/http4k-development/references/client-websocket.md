@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-client-websocket
+---
+
 # http4k-client-websocket Reference
 
 Standalone WebSocket client backed by Java-WebSocket (TooTallNate). Use this when you need WebSocket support without an HTTP client dependency.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-webdriver
+---
+
 # http4k-testing-webdriver Reference
 
 Selenium WebDriver backed by an http4k `HttpHandler`. Test web UIs without starting a real server or browser — requests go directly through the handler.

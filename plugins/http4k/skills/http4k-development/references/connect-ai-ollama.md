@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-ai-ollama
+---
+
 # http4k-connect-ai-ollama Reference
 
 Ollama client — connect actions for locally-running Ollama LLM server.

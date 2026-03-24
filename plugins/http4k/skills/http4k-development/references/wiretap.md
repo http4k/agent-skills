@@ -1,4 +1,9 @@
-# http4k-pro-wiretap Reference
+---
+license: http4k Commercial
+module: http4k-wiretap
+---
+
+# http4k-wiretap Reference
 
 Wiretap is an http4k Pro module — a development console that wraps an HTTP application, recording all traffic and OpenTelemetry spans so you can monitor, inspect, and test what happens inside your app in real time. Requires an http4k Pro license.
 

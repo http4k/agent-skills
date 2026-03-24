@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-storage-jdbc
+---
+
 # http4k-connect-storage-jdbc Reference
 
 JDBC-backed `Storage<T>` — stores JSON-serialized values in a relational database via Exposed ORM.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-client-helidon
+---
+
 # http4k-client-helidon Reference
 
 Synchronous HTTP client backed by Helidon WebClient. Also provides a WebSocket client.

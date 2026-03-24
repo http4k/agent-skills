@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ai-llm-github
+---
+
 # http4k-ai-llm-github Reference
 
 GitHub Models provider for http4k LLM interfaces.

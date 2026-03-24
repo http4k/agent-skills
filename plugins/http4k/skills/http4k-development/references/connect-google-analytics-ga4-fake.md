@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-google-analytics-ga4-fake
+---
+
 # http4k-connect-google-analytics-ga4-fake Reference
 
 In-memory fake Google Analytics GA4 server for testing analytics event sending.

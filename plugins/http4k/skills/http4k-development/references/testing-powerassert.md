@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-powerassert
+---
+
 # http4k-testing-powerassert Reference
 
 Boolean assertion functions for use with Kotlin Power Assert. Provides simple `has*` functions that return `Boolean` for rich compiler-generated error messages.

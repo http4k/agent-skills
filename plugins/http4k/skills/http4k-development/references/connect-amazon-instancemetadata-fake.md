@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-instancemetadata-fake
+---
+
 # http4k-connect-amazon-instancemetadata-fake Reference
 
 In-memory fake EC2 Instance Metadata Service for testing.

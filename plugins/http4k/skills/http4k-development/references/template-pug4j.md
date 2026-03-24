@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-template-pug4j
+---
+
 # http4k-template-pug4j Reference
 
 Pug4J (Jade) template engine integration.

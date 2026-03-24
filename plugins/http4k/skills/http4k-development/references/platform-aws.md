@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-platform-aws
+---
+
 # http4k-platform-aws Reference
 
 AWS platform integration — request signing, SDK client adapter, and credential management.

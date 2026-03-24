@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-tools-traffic-capture
+---
+
 # http4k-tools-traffic-capture Reference
 
 Record, replay, and serve cached HTTP traffic.

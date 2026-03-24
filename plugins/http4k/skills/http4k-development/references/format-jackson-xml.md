@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-jackson-xml
+---
+
 # http4k-format-jackson-xml Reference
 
 XML format module backed by Jackson's `jackson-dataformat-xml`. Provides auto-marshalling between XML and Kotlin types.

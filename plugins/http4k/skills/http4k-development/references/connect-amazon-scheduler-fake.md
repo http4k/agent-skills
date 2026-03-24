@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-scheduler-fake
+---
+
 # http4k-connect-amazon-scheduler-fake Reference
 
 In-memory fake EventBridge Scheduler server for testing scheduled task management.

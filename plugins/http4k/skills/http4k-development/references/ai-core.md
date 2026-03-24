@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ai-core
+---
+
 # http4k-ai-core Reference
 
 Core value types for http4k AI modules.

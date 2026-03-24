@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-template-core
+---
+
 # http4k-template-core Reference
 
 Core template abstraction. All template engines implement `Templates` to provide `CachingClasspath`, `Caching`, and `HotReload` renderers.

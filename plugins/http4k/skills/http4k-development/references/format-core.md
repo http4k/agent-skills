@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-core
+---
+
 # http4k-format-core Reference
 
 Base abstractions for all format modules. Provides `AutoMarshalling`, `AutoMarshallingJson<NODE>`, `Json<NODE>`, and `AutoMappingConfiguration`.

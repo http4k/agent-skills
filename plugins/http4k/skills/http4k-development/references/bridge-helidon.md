@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-bridge-helidon
+---
+
 # http4k-bridge-helidon Reference
 
 Bridge http4k handlers into Helidon SE, with support for HTTP, SSE, and WebSocket.

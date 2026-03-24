@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-ai-mcp-conformance
+---
+
 # http4k-ai-mcp-conformance Reference
 
 MCP protocol conformance test suite — verify your MCP server implementation.

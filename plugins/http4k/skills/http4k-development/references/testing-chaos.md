@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-chaos
+---
+
 # http4k-testing-chaos Reference
 
 Chaos engineering for http4k. Inject failures, latency, and other chaotic behaviours into handlers at runtime.

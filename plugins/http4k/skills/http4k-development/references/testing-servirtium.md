@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-servirtium
+---
+
 # http4k-testing-servirtium Reference
 
 Service virtualization — record and replay HTTP interactions for deterministic integration tests.

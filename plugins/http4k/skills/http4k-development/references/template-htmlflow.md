@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-template-htmlflow
+---
+
 # http4k-template-htmlflow Reference
 
 HtmlFlow type-safe Kotlin DSL templates. Templates are defined in code, not files.

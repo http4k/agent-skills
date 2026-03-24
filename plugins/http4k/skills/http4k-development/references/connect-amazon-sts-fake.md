@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-sts-fake
+---
+
 # http4k-connect-amazon-sts-fake Reference
 
 In-memory fake STS server for testing role assumption.

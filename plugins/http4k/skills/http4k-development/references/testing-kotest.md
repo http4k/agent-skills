@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-kotest
+---
+
 # http4k-testing-kotest Reference
 
 Kotest matchers for http4k types. Provides infix-style assertions with `shouldHave*` extensions.

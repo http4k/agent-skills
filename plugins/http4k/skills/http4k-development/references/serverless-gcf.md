@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-serverless-gcf
+---
+
 # http4k-serverless-gcf Reference
 
 Google Cloud Functions adapter. Run http4k apps as GCF HTTP functions or event functions.

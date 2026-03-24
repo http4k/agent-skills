@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-template-pebble
+---
+
 # http4k-template-pebble Reference
 
 Pebble template engine integration.

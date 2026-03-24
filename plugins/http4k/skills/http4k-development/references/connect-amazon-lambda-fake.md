@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-lambda-fake
+---
+
 # http4k-connect-amazon-lambda-fake Reference
 
 Fake Lambda server that runs actual handler code locally for integration testing.

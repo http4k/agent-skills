@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-kafka-schemaregistry
+---
+
 # http4k-connect-kafka-schemaregistry Reference
 
 SchemaRegistry client — connect actions for Confluent Schema Registry.

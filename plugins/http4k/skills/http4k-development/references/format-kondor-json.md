@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-kondor-json
+---
+
 # http4k-format-kondor-json Reference
 
 JSON format module backed by Kondor-json. Requires explicit converter registration for all types — no reflection-based auto-discovery.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-security-oauth
+---
+
 # http4k-security-oauth Reference
 
 Full OAuth 2.0 implementation — both client (consumer) and server (authorization server). Supports authorization code flow, PKCE, OpenID Connect, CSRF protection, refresh tokens, and client credentials.

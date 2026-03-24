@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-platform-azure
+---
+
 # http4k-platform-azure Reference
 
 Azure platform integration — HTTP client adapter for Azure SDK.

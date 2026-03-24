@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-klaxon
+---
+
 # http4k-format-klaxon Reference
 
 JSON format module backed by Beust Klaxon. Provides auto-marshalling for Kotlin types with Klaxon's converter system.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-tracerbullet
+---
+
 # http4k-testing-tracerbullet Reference
 
 Request flow tracing and visualization. Record events during tests, then render as sequence diagrams.

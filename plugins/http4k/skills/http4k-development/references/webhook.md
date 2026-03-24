@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-webhook
+---
+
 # http4k-webhook Reference
 
 Webhook payload signing and verification using HMAC SHA256.

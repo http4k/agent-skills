@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-serverless-azure
+---
+
 # http4k-serverless-azure Reference
 
 Azure Functions adapter. Run http4k apps as Azure HTTP-triggered functions.

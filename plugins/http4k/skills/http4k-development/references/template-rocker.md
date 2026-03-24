@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-template-rocker
+---
+
 # http4k-template-rocker Reference
 
 Rocker template engine integration with code-generated template models.

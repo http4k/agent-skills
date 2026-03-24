@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-storage-s3
+---
+
 # http4k-connect-storage-s3 Reference
 
 S3-backed `Storage<T>` — stores JSON-serialized values as S3 objects.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-platform-docker
+---
+
 # http4k-platform-docker Reference
 
 Docker platform support — read Docker Swarm secrets as environment variables.

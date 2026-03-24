@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-github
+---
+
 # http4k-connect-github Reference
 
 GitHub client — connect actions for the GitHub REST API.

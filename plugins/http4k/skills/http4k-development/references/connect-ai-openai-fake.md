@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-ai-openai-fake
+---
+
 # http4k-connect-ai-openai-fake Reference
 
 In-memory fake OpenAI server for testing.

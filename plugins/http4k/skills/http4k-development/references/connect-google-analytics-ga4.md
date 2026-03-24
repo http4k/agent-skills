@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-google-analytics-ga4
+---
+
 # http4k-connect-google-analytics-ga4 Reference
 
 Google Analytics GA4 client — connect actions for Google Analytics 4 Measurement Protocol.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-dataframe
+---
+
 # http4k-format-dataframe Reference
 
 Tabular data integration using Kotlin DataFrame. Parses CSV and JSON HTTP bodies into DataFrame instances.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-gson
+---
+
 # http4k-format-gson Reference
 
 JSON format module backed by Google Gson. Provides auto-marshalling and JSON node manipulation with `JsonElement`.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-slack
+---
+
 # http4k-connect-slack Reference
 
 Slack client — connect actions for the Slack Web API and webhooks.

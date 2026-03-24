@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ops-opentelemetry
+---
+
 # http4k-ops-opentelemetry Reference
 
 OpenTelemetry tracing and metrics integration. Distributed tracing with context propagation and semantic convention metrics.

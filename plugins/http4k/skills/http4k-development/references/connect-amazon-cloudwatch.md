@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-cloudwatch
+---
+
 # http4k-connect-amazon-cloudwatch Reference
 
 CloudWatch client — connect actions for Amazon CloudWatch metrics and alarms.

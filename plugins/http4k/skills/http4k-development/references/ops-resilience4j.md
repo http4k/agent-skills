@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ops-resilience4j
+---
+
 # http4k-ops-resilience4j Reference
 
 Resilience4j integration providing circuit breaker, retry, rate limiter, bulkhead, and time limiter as http4k Filters.

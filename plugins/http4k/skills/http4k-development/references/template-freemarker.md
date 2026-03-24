@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-template-freemarker
+---
+
 # http4k-template-freemarker Reference
 
 FreeMarker template engine integration.

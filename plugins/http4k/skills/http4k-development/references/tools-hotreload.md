@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-tools-hotreload
+---
+
 # http4k-tools-hotreload Reference
 
 Hot-reloading development server — recompiles and reloads the app on file changes.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-bridge-servlet
+---
+
 # http4k-bridge-servlet Reference
 
 Bridge http4k handlers into javax.servlet containers.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-kafka-schemaregistry-fake
+---
+
 # http4k-connect-kafka-schemaregistry-fake Reference
 
 In-memory fake Schema Registry server for testing.

@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-ai-mcp-sdk
+---
+
 # http4k-ai-mcp-sdk Reference
 
 MCP server implementation — expose tools, resources, and prompts over multiple transports.

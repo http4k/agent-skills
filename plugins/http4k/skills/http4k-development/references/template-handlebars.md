@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-template-handlebars
+---
+
 # http4k-template-handlebars Reference
 
 Handlebars template engine integration.

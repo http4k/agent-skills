@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-multipart
+---
+
 # http4k-multipart Reference
 
 Multipart form handling — file uploads and multi-field forms.

@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-ai-mcp-x402
+---
+
 # http4k-ai-mcp-x402 Reference
 
 X402 payment protocol integration for MCP servers — charge for tool calls and general MCP usage via a standardised X402 facilitator.

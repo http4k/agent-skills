@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-ai-mcp-client
+---
+
 # http4k-ai-mcp-client Reference
 
 MCP client — connect to MCP servers and call tools, resources, and prompts.

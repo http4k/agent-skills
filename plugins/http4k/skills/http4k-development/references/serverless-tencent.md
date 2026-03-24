@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-serverless-tencent
+---
+
 # http4k-serverless-tencent Reference
 
 Tencent Cloud Functions adapter. Run http4k apps as Tencent Cloud SCF functions.

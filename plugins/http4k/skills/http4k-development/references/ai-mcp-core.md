@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-ai-mcp-core
+---
+
 # http4k-ai-mcp-core Reference
 
 Core Model Context Protocol (MCP) types — tools, resources, prompts, sampling.

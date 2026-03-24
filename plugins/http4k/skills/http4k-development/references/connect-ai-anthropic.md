@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-ai-anthropic
+---
+
 # http4k-connect-ai-anthropic Reference
 
 Anthropic (Claude) API client — low-level connect actions for the Anthropic Messages API.

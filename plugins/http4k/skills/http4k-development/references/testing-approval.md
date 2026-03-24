@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-approval
+---
+
 # http4k-testing-approval Reference
 
 Approval (snapshot) testing for HTTP messages. Compare responses against stored golden files with format-aware diffing.

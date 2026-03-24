@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-sqs-fake
+---
+
 # http4k-connect-amazon-sqs-fake Reference
 
 In-memory fake SQS server for testing.

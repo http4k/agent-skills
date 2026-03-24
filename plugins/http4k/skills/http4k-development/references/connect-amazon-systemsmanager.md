@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-systemsmanager
+---
+
 # http4k-connect-amazon-systemsmanager Reference
 
 SystemsManager client — connect actions for AWS Systems Manager Parameter Store.

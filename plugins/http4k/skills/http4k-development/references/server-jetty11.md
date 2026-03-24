@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-jetty11
+---
+
 # http4k-server-jetty11 Reference
 
 Jetty 11 (Jakarta Servlet) server backend. Supports HTTP, WebSocket, SSE, and HTTP/2. Loom variant available.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-firehose-fake
+---
+
 # http4k-connect-amazon-firehose-fake Reference
 
 In-memory fake Kinesis Data Firehose server for testing.

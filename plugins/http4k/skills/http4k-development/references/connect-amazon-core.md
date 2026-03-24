@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-core
+---
+
 # http4k-connect-amazon-core Reference
 
 Core AWS types, credentials, and SigV4 signing for all Amazon connect modules.

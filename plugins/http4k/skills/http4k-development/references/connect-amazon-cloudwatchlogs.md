@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-cloudwatchlogs
+---
+
 # http4k-connect-amazon-cloudwatchlogs Reference
 
 CloudWatchLogs client — connect actions for Amazon CloudWatch Logs.

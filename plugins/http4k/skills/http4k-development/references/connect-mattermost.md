@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-mattermost
+---
+
 # http4k-connect-mattermost Reference
 
 Mattermost client — connect actions for the Mattermost REST API.

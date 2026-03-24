@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-ai-lmstudio
+---
+
 # http4k-connect-ai-lmstudio Reference
 
 LM Studio client — connect actions for locally-running LM Studio server.

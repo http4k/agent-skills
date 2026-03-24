@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-api-jsonrpc
+---
+
 # http4k-api-jsonrpc Reference
 
 JSON-RPC 2.0 server with auto and manual marshalling modes. Supports batching, notifications, positional and named parameters.

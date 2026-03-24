@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-serverless-lambda-runtime
+---
+
 # http4k-serverless-lambda-runtime Reference
 
 AWS Lambda custom runtime. Run http4k Lambda functions with the Lambda Runtime API (for custom runtimes or GraalVM native images).

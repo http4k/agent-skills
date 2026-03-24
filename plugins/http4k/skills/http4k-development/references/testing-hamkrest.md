@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-hamkrest
+---
+
 # http4k-testing-hamkrest Reference
 
 Hamkrest matchers for http4k types. Composable matchers for Response, Request, HttpMessage, Cookie, and Uri.

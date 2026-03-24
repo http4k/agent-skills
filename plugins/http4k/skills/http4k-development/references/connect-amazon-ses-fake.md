@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-ses-fake
+---
+
 # http4k-connect-amazon-ses-fake Reference
 
 In-memory fake SES server for testing email sending.

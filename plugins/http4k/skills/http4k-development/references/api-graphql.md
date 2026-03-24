@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-api-graphql
+---
+
 # http4k-api-graphql Reference
 
 GraphQL server and client support bridging graphql-java to http4k's function model. `GraphQLHandler` is `(GraphQLRequest) -> GraphQLResponse`.

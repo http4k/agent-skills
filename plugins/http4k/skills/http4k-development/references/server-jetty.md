@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-jetty
+---
+
 # http4k-server-jetty Reference
 
 Jetty 12 server backend. Supports HTTP, WebSocket, SSE, and HTTP/2. Loom variant available.

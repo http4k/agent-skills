@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ops-failsafe
+---
+
 # http4k-ops-failsafe Reference
 
 Failsafe integration providing a single unified filter for circuit breaker, retry, rate limiter, bulkhead, timeout, and fallback policies.

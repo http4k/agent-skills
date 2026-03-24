@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-incubator
+---
+
 # http4k-incubator Reference
 
 Experimental features — typed HTTP messages, resource serving, and HTMX test support.

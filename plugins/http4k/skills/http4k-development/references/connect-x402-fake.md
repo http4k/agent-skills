@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-connect-x402-fake
+---
+
 # http4k-connect-x402-fake Reference
 
 Fake implementation of the X402 Facilitator for testing payment flows without real blockchain transactions.

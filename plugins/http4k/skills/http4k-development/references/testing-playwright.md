@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-testing-playwright
+---
+
 # http4k-testing-playwright Reference
 
 Playwright browser testing backed by an http4k `HttpHandler`. Starts a real browser against a temporary in-process server.

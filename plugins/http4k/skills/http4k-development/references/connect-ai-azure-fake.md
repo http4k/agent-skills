@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-ai-azure-fake
+---
+
 # http4k-connect-ai-azure-fake Reference
 
 In-memory fake Azure OpenAI server for testing.

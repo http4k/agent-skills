@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-template-jte
+---
+
 # http4k-template-jte Reference
 
 JTE (Java Template Engine) integration with type-safe Kotlin templates.

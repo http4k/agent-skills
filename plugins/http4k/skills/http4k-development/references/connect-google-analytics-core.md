@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-google-analytics-core
+---
+
 # http4k-connect-google-analytics-core Reference
 
 Shared models and types for Google Analytics integrations (UA and GA4).

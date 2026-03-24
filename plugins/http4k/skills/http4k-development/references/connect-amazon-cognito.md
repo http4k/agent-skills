@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-cognito
+---
+
 # http4k-connect-amazon-cognito Reference
 
 Cognito client — connect actions for AWS Cognito user pools and identity.

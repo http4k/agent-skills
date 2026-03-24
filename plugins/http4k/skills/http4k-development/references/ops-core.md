@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-ops-core
+---
+
 # http4k-ops-core Reference
 
 Core metrics abstractions shared by Micrometer and OpenTelemetry integrations.

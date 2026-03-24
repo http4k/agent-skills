@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-ratpack
+---
+
 # http4k-server-ratpack Reference
 
 Ratpack server backend. HTTP only — no WebSocket or SSE.

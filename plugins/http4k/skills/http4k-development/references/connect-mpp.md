@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-connect-mpp
+---
+
 # http4k-connect-mpp Reference
 
 Machine Payments Protocol (MPP) — HTTP-level payment authentication using a challenge/credential/receipt flow. Supports both server-side enforcement and client-side automatic handling.

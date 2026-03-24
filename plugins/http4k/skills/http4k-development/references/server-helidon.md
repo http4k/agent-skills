@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-server-helidon
+---
+
 # http4k-server-helidon Reference
 
 Helidon SE 4.x server backend. Supports HTTP, WebSocket, and SSE.

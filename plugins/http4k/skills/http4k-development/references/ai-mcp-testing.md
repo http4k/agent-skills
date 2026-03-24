@@ -1,3 +1,8 @@
+---
+license: http4k Commercial
+module: http4k-ai-mcp-testing
+---
+
 # http4k-ai-mcp-testing Reference
 
 In-memory MCP client for testing MCP servers without network transport.

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-sqs
+---
+
 # http4k-connect-amazon-sqs Reference
 
 SQS client — connect actions for Amazon Simple Queue Service.

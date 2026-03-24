@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-platform-core
+---
+
 # http4k-platform-core Reference
 
 Core platform abstractions for cross-cutting concerns when calling remote services.

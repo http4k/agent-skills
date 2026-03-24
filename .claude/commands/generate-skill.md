@@ -54,6 +54,27 @@ Generate a reference file for **every** discovered module (e.g., `references/cor
 
 These files are NOT all loaded at once. The SKILL.md instructs Claude to only read references matching the user's project dependencies.
 
+Each reference file must start with YAML frontmatter containing `module` and `license`:
+
+```markdown
+---
+module: http4k-core
+license: Apache-2.0
+---
+```
+
+or for commercially licensed modules:
+
+```markdown
+---
+module: http4k-ai-mcp-core
+license: http4k Commercial
+---
+```
+
+- **`module`**: The full module name (e.g., `http4k-server-undertow`)
+- **`license`**: Any module whose source lives under the `pro/` directory in the http4k repo is `http4k Commercial`. All other modules are `Apache-2.0`.
+
 Each reference file should contain:
 - Module-specific patterns and configuration
 - Gotchas specific to that module

@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-format-moshi
+---
+
 # http4k-format-moshi Reference
 
 JSON format module backed by Square Moshi. Provides auto-marshalling and JSON node manipulation with `MoshiNode`.

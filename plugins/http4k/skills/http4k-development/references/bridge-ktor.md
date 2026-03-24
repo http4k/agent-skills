@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-bridge-ktor
+---
+
 # http4k-bridge-ktor Reference
 
 Bridge http4k handlers into Ktor as an application plugin.

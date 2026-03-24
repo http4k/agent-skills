@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-core
+---
+
 # http4k-connect-core Reference
 
 Core abstractions for the http4k-connect pattern — typed actions over HTTP.

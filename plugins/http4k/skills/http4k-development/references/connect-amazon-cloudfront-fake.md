@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-cloudfront-fake
+---
+
 # http4k-connect-amazon-cloudfront-fake Reference
 
 In-memory fake CloudFront server for testing cache invalidation flows.

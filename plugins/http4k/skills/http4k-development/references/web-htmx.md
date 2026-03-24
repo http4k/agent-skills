@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-web-htmx
+---
+
 # http4k-web-htmx Reference
 
 HTMX integration for http4k — headers, request detection, and webjar serving.

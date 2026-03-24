@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-ai-openai
+---
+
 # http4k-connect-ai-openai Reference
 
 OpenAI API client — low-level connect actions for OpenAI REST API.

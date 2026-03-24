@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-amazon-containercredentials
+---
+
 # http4k-connect-amazon-containercredentials Reference
 
 ContainerCredentials client — connect actions for ECS/EKS container credential endpoint.

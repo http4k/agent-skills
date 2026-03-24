@@ -1,3 +1,8 @@
+---
+license: Apache-2.0
+module: http4k-connect-kafka-rest
+---
+
 # http4k-connect-kafka-rest Reference
 
 KafkaRest client — connect actions for Confluent Kafka REST Proxy (v2 and v3 APIs).
