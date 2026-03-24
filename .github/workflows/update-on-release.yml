@@ -54,6 +54,7 @@ jobs:
           git add -A
           git commit -m "Upgrade to http4k ${VERSION}"
           git tag "${VERSION}"
+          git pull --rebase origin master
           git push origin master --tags
 
       - name: Create GitHub release
