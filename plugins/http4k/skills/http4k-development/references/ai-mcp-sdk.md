@@ -115,7 +115,8 @@ logger.log("Server started", LogLevel.info)
 
 ```kotlin
 // Add MCP-level tracing (creates SERVER spans per JSON-RPC method)
-val tracedMcp = McpFilters.OpenTelemetryTracing(openTelemetry = openTelemetry)
+// openTelemetry is the first parameter, spanModifiers is the second
+val tracedMcp = McpFilters.OpenTelemetryTracing(openTelemetry)
     .then(mcpHandler)
 
 // Uses GlobalOpenTelemetry by default

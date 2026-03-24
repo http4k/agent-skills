@@ -54,16 +54,16 @@ val app = ServerFilters.OpenTelemetryTracing(
 //       http.route, http.response.status_code
 // Note: serverUrl is null (not set on server spans)
 
-// Legacy http4k conventions (default, backward-compatible)
+// Legacy http4k conventions (deprecated, backward-compatible)
 val app = ServerFilters.OpenTelemetryTracing(
-    attributeKeys = LegacyHttp4kConventions  // this is the default
+    attributeKeys = LegacyHttp4kConventions
 ).then(myHandler)
 // Uses: http.method, http.url, http.user_agent, http.client_ip,
 //       http.route, http.status_code
 
 // Works on both server and client filters
 val client = ClientFilters.OpenTelemetryTracing(
-    attributeKeys = OpenTelemetrySemanticConventions
+    attributeKeys = OpenTelemetrySemanticConventions  // this is the default
 ).then(httpClient)
 ```
 
@@ -186,7 +186,8 @@ Attribute typing:
 - **Error status**: Server errors (`5xx`) set span status to `ERROR`. Client errors (`4xx`) set `UNSET` on server, `ERROR` on client.
 - **Instrumentation name**: All spans/metrics use `"http4k"` as the instrumentation library name.
 - **2x vs 1.x metrics**: `OpenTelemetry2xMetrics` follows OTel semantic conventions v2 (duration in seconds, standard attribute names). Prefer this for new projects.
-- **attributeKeys defaults to LegacyHttp4kConventions**: The `LegacyHttp4kConventions` default is deprecated. Pass `OpenTelemetrySemanticConventions` explicitly for new projects.
+- **Default is now OpenTelemetrySemanticConventions**: All tracing filters (`ClientFilters`, `ServerFilters`, `PolyFilters`, `ServerFilters.OpenTelemetrySseTracing`) default to `OpenTelemetrySemanticConventions`. `LegacyHttp4kConventions` is deprecated.
+- **defaultSpanNamer includes URI for non-template requests**: For requests without a `UriTemplate` (e.g., client-side calls), the default span name is `"METHOD uri"` (e.g., `"GET /api/users"`). For router-matched requests, it's `"METHOD /template"`. Override `spanNamer` if you want different behaviour.
 - **SSE span lifecycle**: Unlike HTTP tracing (span ends when response returns), SSE spans live for the connection lifetime. The span ends when `close()` is called on the SSE connection, not when the `SseResponse` is returned.
 - **SSE span context propagation**: Span context is automatically restored inside SSE consumers, so `Span.current()` is valid within the consumer callback.
 - **AutoOpenTelemetryEvents requires format-core**: The `http4k-format-core` dependency is needed for JSON type introspection.

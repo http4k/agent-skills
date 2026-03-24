@@ -62,9 +62,38 @@ Message.System("You are helpful")
 Message.Assistant("Previous response")
 ```
 
+## Structured Output (JSON Schema)
+
+`ResponseFormat` is a sealed class with two variants:
+
+```kotlin
+// Force JSON output (no schema enforcement)
+val result = ollama.chatCompletion(
+    model = ModelName.of("llama3.2"),
+    messages = listOf(Message.User("Extract data")),
+    responseFormat = ResponseFormat.json
+)
+
+// Structured output with JSON schema enforcement
+val schema = mapOf(
+    "type" to "object",
+    "properties" to mapOf(
+        "name" to mapOf("type" to "string"),
+        "age" to mapOf("type" to "integer")
+    ),
+    "required" to listOf("name", "age")
+)
+val result = ollama.chatCompletion(
+    model = ModelName.of("llama3.2"),
+    messages = listOf(Message.User("Extract name and age from: John is 30")),
+    responseFormat = ResponseFormat.Schema(schema)
+)
+```
+
 ## Gotchas
 
 - No authentication — Ollama is a local service
 - Model must be pulled locally before use (`pullModel`)
 - `chatCompletion` returns `Sequence<CompletionResponse>` (streaming)
 - Default port is `11434`
+- `ResponseFormat` is a sealed class, not an enum — use `ResponseFormat.json` (data object) or `ResponseFormat.Schema(map)` (data class)
