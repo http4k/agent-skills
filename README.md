@@ -1,34 +1,27 @@
 # http4k Agent Skills
 
-AI coding agent skills for the [http4k](https://http4k.org) Kotlin HTTP toolkit.
+AI coding skills that teach [Claude Code](https://claude.ai/code) how to work with the [http4k](https://http4k.org) Kotlin HTTP toolkit.
 
-## Overview
+## Available Skills
 
-This repository is a Claude Code marketplace providing skills that teach AI coding agents how to work effectively with http4k. Skills include reference documentation, coding patterns, and anti-patterns for each http4k module.
+### http4k-development
+
+Comprehensive guidance for all 200+ http4k modules — covering servers, clients, formats, testing, serverless, cloud platforms, AI/LLM integrations, and more. The skill automatically detects which http4k modules your project uses (via Gradle/Maven build files) and loads only the relevant references.
+
+## Installation
+
+In Claude Code, add the marketplace and install the plugin:
+
+```
+/plugin marketplace add http4k/agent-skills
+/plugin install http4k
+```
+
+Once installed, the skill activates automatically whenever you work on a project that uses http4k.
 
 ## Version
 
-Skill versions track http4k releases automatically. When a new http4k version is released, this repository is updated via GitHub Actions dispatch.
-
-## Structure
-
-```
-.claude-plugin/
-  marketplace.json               # Marketplace catalog
-plugins/http4k/
-  .claude-plugin/
-    plugin.json                  # Plugin manifest + version
-  skills/
-    http4k-development/          # The single published skill
-      SKILL.md                   # Skill definition (detects user's deps)
-      references/                # One reference file per http4k module
-        core.md
-        server-undertow.md
-        format-jackson.md
-        ...
-```
-
-When activated, the skill scans the user's project build files (Gradle/Maven) to detect which http4k modules are in use, then loads only the relevant reference files.
+Skill versions track http4k releases automatically. 
 
 ## License
 
