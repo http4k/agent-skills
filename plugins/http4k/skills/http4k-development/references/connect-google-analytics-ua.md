@@ -37,7 +37,7 @@ ua.sendHit(
 
 ## Gotchas
 
-- Universal Analytics (UA) is **deprecated** — Google ended processing UA hits in July 2023
+- Universal Analytics (UA) is **deprecated** — Google no longer processes UA hits
 - Use `connect-google-analytics-ga4` for new implementations
 - `trackingId` format: `UA-XXXXXXXXX-Y` (property ID + view ID)
 - No fake provided for UA — consider using GA4 with its fake for new test infrastructure

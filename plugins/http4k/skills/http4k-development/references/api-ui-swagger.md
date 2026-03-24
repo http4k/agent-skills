@@ -48,5 +48,5 @@ swaggerUiWebjar {
 
 - **Root redirects**: Requesting the root path redirects to `index.html`.
 - **Default URL**: Points to petstore if not set. Always set `url` to your spec endpoint.
-- **Webjar version**: Bundles Swagger UI 5.31.0 — no CDN needed, works offline.
+- **Webjar version**: Serves Swagger UI from classpath — no CDN needed, works offline.
 - **Null options omitted**: Boolean options set to `null` are omitted from the config (Swagger UI defaults apply).

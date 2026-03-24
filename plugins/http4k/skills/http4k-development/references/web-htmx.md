@@ -67,7 +67,7 @@ val routes = routes(
 )
 ```
 
-Serves HTMX 2.0.8 and Hyperscript 0.9.14 from classpath webjars with redirects.
+Serves HTMX and Hyperscript from classpath webjars with redirects.
 
 ## Value Types
 

@@ -35,6 +35,6 @@ redocWebjar {
 
 - **Root redirects**: Requesting the root path redirects to `index.html`.
 - **Default URL**: Points to petstore if not set. Always set `url` to your spec endpoint.
-- **Webjar version**: Bundles Redoc 2.0.0 — no CDN needed, works offline.
+- **Webjar version**: Serves Redoc from classpath — no CDN needed, works offline.
 - **Options as HTML attributes**: The `options` map entries become attributes on the `<redoc>` HTML element, following Redoc's attribute-based configuration.
 - **Simpler than Swagger UI**: Redoc has fewer config options — just `url`, `pageTitle`, and free-form `options`.

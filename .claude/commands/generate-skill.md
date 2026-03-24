@@ -103,7 +103,20 @@ Skills must be:
 2. **Actionable** — concrete patterns with correct/wrong examples
 3. **Example-rich** — real http4k code, not abstract descriptions
 4. **Gotcha-focused** — prioritize pitfalls that cause runtime failures over obvious patterns
-5. **Version-agnostic** — each file is a snapshot in time representing the current state of the API. Do NOT include version-specific hints, migration notes, or references to specific version numbers (e.g., "Breaking in 6.32", "new in 6.34", "changed from 6.26"). Describe behavior as it IS, not how it changed.
+5. **Version-agnostic** — each file is a snapshot in time representing the current state of the API. Describe behavior as it IS, not how it changed.
+
+   **AVOID these patterns:**
+   - Temporal/change language: "now defaults to", "new in", "changed from", "was previously", "2x vs 1.x"
+   - Bundled/external dependency version numbers that go stale: "Bundles Swagger UI 5.31.0", "HTMX 2.0.8"
+   - External product lifecycle dates: "Google ended processing UA hits in July 2023"
+   - http4k release version references: "Breaking in 6.32", "new in 6.34", "since 6.26"
+
+   **ACCEPTABLE (not violations):**
+   - "deprecated" as current API status (e.g., "`LegacyHttp4kConventions` is deprecated")
+   - "Legacy" as a module descriptor
+   - "Prefer X for new projects" as guidance
+   - External version numbers that are part of module identity (e.g., "Apache HttpClient 4.x" vs "5.x")
+   - Semantic convention edition names as API variant identifiers (e.g., "v2"), not pinned spec versions (e.g., "v1.38.0")
 
 ### Progressive Disclosure
 

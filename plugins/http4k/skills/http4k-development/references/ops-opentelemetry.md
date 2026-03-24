@@ -46,7 +46,7 @@ Tracing filters accept an `attributeKeys` parameter to control span attribute na
 // OpenTelemetryAttributesKeys interface defines the attribute key contract
 // Two built-in implementations:
 
-// OTel Semantic Conventions v1.38.0 (recommended for new projects)
+// OTel Semantic Conventions (recommended for new projects)
 val app = ServerFilters.OpenTelemetryTracing(
     attributeKeys = OpenTelemetrySemanticConventions
 ).then(myHandler)
@@ -185,8 +185,8 @@ Attribute typing:
 - **Span kind**: Server filter creates `SERVER` spans; client filter creates `CLIENT` spans.
 - **Error status**: Server errors (`5xx`) set span status to `ERROR`. Client errors (`4xx`) set `UNSET` on server, `ERROR` on client.
 - **Instrumentation name**: All spans/metrics use `"http4k"` as the instrumentation library name.
-- **2x vs 1.x metrics**: `OpenTelemetry2xMetrics` follows OTel semantic conventions v2 (duration in seconds, standard attribute names). Prefer this for new projects.
-- **Default is now OpenTelemetrySemanticConventions**: All tracing filters (`ClientFilters`, `ServerFilters`, `PolyFilters`, `ServerFilters.OpenTelemetrySseTracing`) default to `OpenTelemetrySemanticConventions`. `LegacyHttp4kConventions` is deprecated.
+- **Semantic convention metrics**: `OpenTelemetry2xMetrics` follows OTel semantic conventions v2 (duration in seconds, standard attribute names). Prefer this for new projects.
+- **Defaults to OpenTelemetrySemanticConventions**: All tracing filters (`ClientFilters`, `ServerFilters`, `PolyFilters`, `ServerFilters.OpenTelemetrySseTracing`) default to `OpenTelemetrySemanticConventions`. `LegacyHttp4kConventions` is deprecated.
 - **defaultSpanNamer includes URI for non-template requests**: For requests without a `UriTemplate` (e.g., client-side calls), the default span name is `"METHOD uri"` (e.g., `"GET /api/users"`). For router-matched requests, it's `"METHOD /template"`. Override `spanNamer` if you want different behaviour.
 - **SSE span lifecycle**: Unlike HTTP tracing (span ends when response returns), SSE spans live for the connection lifetime. The span ends when `close()` is called on the SSE connection, not when the `SseResponse` is returned.
 - **SSE span context propagation**: Span context is automatically restored inside SSE consumers, so `Span.current()` is valid within the consumer callback.
