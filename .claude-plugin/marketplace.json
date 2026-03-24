@@ -1,0 +1,18 @@
+{
+  "name": "http4k-marketplace",
+  "metadata": {
+    "description": "AI coding agent skills for the http4k Kotlin HTTP toolkit",
+    "version": "6.34.0.0"
+  },
+  "owner": {
+    "name": "http4k",
+    "url": "https://http4k.org"
+  },
+  "plugins": [
+    {
+      "name": "http4k",
+      "source": "./plugins/http4k",
+      "description": "http4k Kotlin HTTP toolkit - Server as a Function"
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+# http4k-ai-mcp-core Reference
+
+Core Model Context Protocol (MCP) types — tools, resources, prompts, sampling.
+
+## Tool Definition
+
+```kotlin
+val myTool = Tool(
+    name = ToolName.of("calculator"),
+    description = "Perform arithmetic",
+    args = listOf(
+        Tool.Arg.string() named "operation" described "add, sub, mul, div",
+        Tool.Arg.int() named "a" described "first operand",
+        Tool.Arg.int() named "b" described "second operand"
+    )
+)
+```
+
+## Tool Handler
+
+```kotlin
+val handler: ToolHandler = { req: ToolRequest ->
+    val operation = Tool.Arg.string() named "operation" from req
+    val a = Tool.Arg.int() named "a" from req
+    val b = Tool.Arg.int() named "b" from req
+    ToolResponse.Ok(listOf(Content.Text("Result: ${when(operation) {
+        "add" -> a + b
+        else -> "unknown"
+    }}")))
+}
+```
+
+## Arg Types
+
+```kotlin
+Tool.Arg.string()
+Tool.Arg.nonEmptyString()
+Tool.Arg.boolean()
+Tool.Arg.int()
+Tool.Arg.long()
+Tool.Arg.double()
+Tool.Arg.float()
+Tool.Arg.uuid()
+Tool.Arg.uri()
+Tool.Arg.instant()
+Tool.Arg.duration()
+Tool.Arg.enum<MyEnum>()
+Tool.Arg.value(MyValue)
+Tool.Arg.status()            // maps to/from HTTP Status code
+```
+
+Non-string arg types (boolean, int, long, double, float) handle both native JSON types and string representations — `42` and `"42"` both work for `int()`.
+
+## Resource Definition
+
+```kotlin
+// Static resource
+Resource.Static(
+    uri = Uri.of("file:///data/config.json"),
+    name = ResourceName.of("config"),
+    description = "Application config",
+    mimeType = MimeType.of("application/json")
+)
+
+// Templated resource
+Resource.Templated(
+    uriTemplate = ResourceUriTemplate.of("file:///data/{filename}"),
+    name = ResourceName.of("files"),
+    description = "Data files"
+)
+```
+
+## Resource Handler
+
+```kotlin
+val handler: ResourceHandler = { req: ResourceRequest ->
+    ResourceResponse(listOf(
+        Resource.Content.Text(
+            uri = req.uri,
+            text = File(req.uri.path).readText(),
+            mimeType = MimeType.of("text/plain")
+        )
+    ))
+}
+```
+
+## Prompt Definition
+
+```kotlin
+val myPrompt = Prompt(
+    name = PromptName.of("summarize"),
+    description = "Summarize text",
+    args = listOf(
+        Prompt.Arg.string() named "text" described "Text to summarize",
+        Prompt.Arg.string() named "style" described "Brief or detailed"
+    )
+)
+```
+
+## Prompt Handler
+
+```kotlin
+val handler: PromptHandler = { req: PromptRequest ->
+    val text = req["text"] ?: ""
+    PromptResponse(
+        messages = listOf(Message.User(listOf(Content.Text("Summarize: $text")))),
+        description = "Summarization prompt"
+    )
+}
+```
+
+## Client Interface (Server-side, for callbacks)
+
+```kotlin
+// Available in ToolRequest.client, ResourceRequest.client, PromptRequest.client
+fun handler(req: ToolRequest): ToolResponse {
+    req.client.log("Processing request", LogLevel.info)
+    req.client.progress(50, 100.0, "halfway done")
+    return ToolResponse.Ok(...)
+}
+```
+
+## Error Handling
+
+```kotlin
+typealias McpResult<T> = Result4k<T, McpError>
+
+sealed interface McpError {
+    data class Protocol(val error: ErrorMessage) : McpError
+    data class Http(val response: Response) : McpError
+    data object Timeout : McpError
+    data class Internal(val cause: Exception) : McpError
+}
+```
