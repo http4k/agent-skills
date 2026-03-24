@@ -120,6 +120,72 @@ fun handler(req: ToolRequest): ToolResponse {
 }
 ```
 
+## Meta and MetaKey Lens System
+
+`Meta` wraps MCP `_meta` fields as a typed, lens-accessible object:
+
+```kotlin
+// Meta is a wrapper around MoshiObject
+val meta = Meta()  // empty
+val meta = Meta(lens1 of value1, lens2 of value2)  // with fields
+
+// Access raw values by string key
+val token: MoshiNode? = meta["progressToken"]
+```
+
+### MetaKey (Lens Spec)
+
+`MetaKey` provides strongly-typed access to meta fields via lenses:
+
+```kotlin
+// Built-in meta keys
+val progressLens = MetaKey.progressToken().toLens()
+val traceParentLens = MetaKey.traceParent().toLens()
+val traceStateLens = MetaKey.traceState().toLens()
+val baggageLens = MetaKey.baggage().toLens()
+
+// Read from meta
+val token: ProgressToken? = progressLens(meta)
+
+// Write to meta (returns new Meta)
+val newMeta = Meta(progressLens of ProgressToken.of("abc"))
+
+// Combine multiple fields
+val meta = Meta(progressLens of token, traceParentLens of parent)
+```
+
+### Custom Meta Keys (Auto-Marshalled)
+
+Use `MetaKey.auto()` with a `ConfigurableMcpJson` subclass for custom types:
+
+```kotlin
+// Define a field name and type
+data class MyPayload(val data: String)
+
+val myLens = MetaKey.auto(MetaField<MyPayload>("my/custom-key"), MyMoshi).toLens()
+
+val meta = Meta(myLens of MyPayload("hello"))
+val payload: MyPayload? = myLens(meta)  // nullable — returns null if key absent
+```
+
+### MetaField
+
+`MetaField<T>` names a typed meta key for use with lens specs:
+
+```kotlin
+open class MetaField<T : Any>(val key: String)
+```
+
+## ToolFilter (Chaining)
+
+```kotlin
+// ToolFilter wraps tool handlers for cross-cutting concerns
+val filter = ToolFilter { next -> { request -> next(request) } }
+
+// Chain filter before a tool
+val filteredTool = filter.then(myTool)
+```
+
 ## Error Handling
 
 ```kotlin

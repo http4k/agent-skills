@@ -5,7 +5,7 @@ Core abstractions for the http4k-connect pattern — typed actions over HTTP.
 ## Action Pattern
 
 ```kotlin
-interface Action<R> {
+interface Action<out R> {
     fun toRequest(): Request
     fun toResult(response: Response): R
 }

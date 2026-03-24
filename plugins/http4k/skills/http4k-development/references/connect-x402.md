@@ -51,8 +51,8 @@ val requirements = PaymentRequirements(
 
 // Server filter — verifies and settles payments
 val app = ServerFilters.X402PaymentRequired(
-    requirements = { request -> listOf(requirements) },
-    facilitator = facilitator
+    facilitator = facilitator,
+    requirements = { request -> listOf(requirements) }
 ).then(myHandler)
 
 // Or use as Security provider
@@ -115,7 +115,7 @@ val facilitator = X402Facilitator.Http(Uri.of(""), fake)
 val signer = X402Signer { Success(payload) }
 
 val server = ServerFilters.X402PaymentRequired(
-    { listOf(requirements) }, facilitator
+    facilitator, { listOf(requirements) }
 ).then { Response(OK).body("paid content") }
 
 val client = ClientFilters.X402PaymentRequired(signer).then(server)
@@ -135,7 +135,7 @@ val response = client(Request(GET, "/resource"))
 ## Gotchas
 
 - **Bring your own signer**: The module provides the protocol, not the crypto. Use an OSS library like web3j for actual signing.
-- **Server uses first requirement only**: `ServerFilters.X402PaymentRequired` verifies/settles against `reqs.first()` even if multiple requirements are provided.
+- **Server matches by scheme/network**: `ServerFilters.X402PaymentRequired` matches the payment's `scheme` + `network` against the requirements list. If no match is found, a 402 error is returned.
 - **All value types are NonBlankString**: `PaymentScheme.of("")` throws — values must be non-blank.
 - **Nullable response fields**: `VerifyResponse.payer` is only populated when `isValid == true`. `SettleResponse` fields (transaction, network, payer) only populated when `success == true`.
 - **Client filter retry**: On 402, the client filter signs and retries once. If the retry also returns 402, that response is returned as-is (no infinite retry).
