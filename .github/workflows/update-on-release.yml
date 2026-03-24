@@ -53,7 +53,7 @@ jobs:
           git add -A
           git commit -m "Upgrade to http4k ${VERSION}"
           git tag "${VERSION}"
-          git push origin main --tags
+          git push origin master --tags
 
       - name: Create GitHub release
         env:
@@ -63,4 +63,4 @@ jobs:
           gh release create "${VERSION}" \
             --title "http4k ${VERSION}" \
             --notes "Automated release tracking http4k ${VERSION}" \
-            --target main
+            --target master
