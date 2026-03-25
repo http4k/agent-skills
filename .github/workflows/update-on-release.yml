@@ -33,7 +33,7 @@ jobs:
         run: |
           VERSION="${{ github.event.client_payload.version || github.event.inputs.version }}"
           claude -p \
-            --dangerously-skip-permissions \
+            --permission-mode dontAsk \
             --model sonnet \
             --max-budget-usd 5 \
             "Read the file .claude/commands/generate-skill.md for instructions. Follow those instructions exactly, using version ${VERSION} as the version argument. The \$ARGUMENTS placeholder in that file should be replaced with ${VERSION}."
