@@ -79,7 +79,7 @@ Resource.Templated(
 
 ```kotlin
 val handler: ResourceHandler = { req: ResourceRequest ->
-    ResourceResponse(listOf(
+    ResourceResponse.Ok(listOf(
         Resource.Content.Text(
             uri = req.uri,
             text = File(req.uri.path).readText(),
@@ -88,6 +88,8 @@ val handler: ResourceHandler = { req: ResourceRequest ->
     ))
 }
 ```
+
+Return `ResourceResponse.Error("message")` to surface a domain error to the client (transmitted via protocol error code `-32050` and reconstructed as `ResourceResponse.Error` on the client side).
 
 ## Prompt Definition
 
@@ -107,12 +109,14 @@ val myPrompt = Prompt(
 ```kotlin
 val handler: PromptHandler = { req: PromptRequest ->
     val text = req["text"] ?: ""
-    PromptResponse(
+    PromptResponse.Ok(
         messages = listOf(Message.User(listOf(Content.Text("Summarize: $text")))),
         description = "Summarization prompt"
     )
 }
 ```
+
+Return `PromptResponse.Error("message")` to surface a domain error to the client.
 
 ## Client Interface (Server-side, for callbacks)
 
@@ -208,7 +212,32 @@ val filter = ToolFilter { next -> { request -> next(request) } }
 val filteredTool = filter.then(myTool)
 ```
 
-## Error Handling
+## Response Types (Sealed Interfaces)
+
+`CompletionResponse`, `PromptResponse`, and `ResourceResponse` are sealed interfaces with `Ok` and `Error` subtypes. Always construct responses using the subtype, not the interface directly:
+
+```kotlin
+// Correct
+CompletionResponse.Ok(listOf("value1", "value2"))
+PromptResponse.Ok(listOf(Message(Role.Assistant, Text("response"))))
+ResourceResponse.Ok(listOf(Resource.Content.Text(uri, "content")))
+
+// Signal a domain error (transported via error code -32050)
+CompletionResponse.Error("argument is required")
+PromptResponse.Error("template not found")
+ResourceResponse.Error("resource unavailable")
+```
+
+`SamplingResponse` and `ElicitationResponse` also have an `Error` subtype:
+
+```kotlin
+SamplingResponse.Error("LLM unavailable")
+ElicitationResponse.Error("user cancelled")
+```
+
+On the **client side**, errors transmitted via domain error code `-32050` are reconstructed as `*.Error` subtypes rather than surfacing as `McpError.Protocol`.
+
+## McpResult Helpers
 
 ```kotlin
 typealias McpResult<T> = Result4k<T, McpError>
@@ -219,4 +248,7 @@ sealed interface McpError {
     data object Timeout : McpError
     data class Internal(val cause: Exception) : McpError
 }
+
+// Coerce a McpResult to a specific type or throw AssertionError (useful in tests)
+val response: PromptResponse.Ok = mcpResult.coerce<PromptResponse.Ok>()
 ```

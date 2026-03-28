@@ -153,6 +153,10 @@ intercept.capturedStdErr                    // stderr captured during the test
 
 `WiretapTransaction.direction` is `Direction.Inbound` (server received) or `Direction.Outbound` (client sent).
 
+## MCP Inspector UI
+
+When the target app exposes an MCP server, the Wiretap console includes an MCP inspector with tabs for tools, resources, prompts, and completions. The completions tab lets you interactively test completion handlers against your MCP server.
+
 ## Gotchas
 
 - **Pro license required**: `http4k-pro-wiretap` requires an http4k Pro commercial license.

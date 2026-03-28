@@ -73,6 +73,12 @@ val content: ResourceResponse = resources.read(
     ResourceRequest(Uri.of("file:///data/config.json"))
 ).getOrThrow()
 
+// ResourceResponse is a sealed interface — pattern-match on the result
+when (content) {
+    is ResourceResponse.Ok -> content.list.forEach { println(it) }
+    is ResourceResponse.Error -> println("Error: ${content.message}")
+}
+
 resources.subscribe(Uri.of("file:///data/config.json")) {
     println("Resource updated")
 }
@@ -89,6 +95,12 @@ val result: PromptResponse = prompts.get(
     PromptName.of("summarize"),
     PromptRequest(mapOf("text" to "Hello world", "style" to "brief"))
 ).getOrThrow()
+
+// PromptResponse is a sealed interface
+when (result) {
+    is PromptResponse.Ok -> result.messages.forEach { println(it) }
+    is PromptResponse.Error -> println("Error: ${result.message}")
+}
 ```
 
 ## Sampling (LLM from server → client)
@@ -128,3 +140,4 @@ val testClient = TestMcpClient()
 - `start()` must be called before any operations
 - Override timeouts per-call: `tools.list(overrideDefaultTimeout = 30.seconds)`
 - `onChange` callbacks fire on the transport thread — don't block
+- **`ResourceResponse`, `PromptResponse`, `CompletionResponse` are sealed interfaces**: Pattern-match on `Ok` and `Error` subtypes. Domain errors from the server are reconstructed as `*.Error` (not `McpError.Protocol`) when the server returns error code `-32050`.

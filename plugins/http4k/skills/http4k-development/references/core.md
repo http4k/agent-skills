@@ -177,6 +177,10 @@ ClientFilters.FollowRedirects()
 // Request tracing (Zipkin-style)
 ServerFilters.RequestTracing()   // server-side
 ClientFilters.RequestTracing()   // client-side propagation
+
+// Report HTTP transactions to the Events system
+ServerFilters.ReportHttpTransaction(events)  // emits HttpEvent.Incoming
+ClientFilters.ReportHttpTransaction(events)  // emits HttpEvent.Outgoing
 ```
 
 ## Lens System

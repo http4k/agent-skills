@@ -210,6 +210,24 @@ val clientApp = routes(
 )
 ```
 
+## FakeOAuthServer (Testing)
+
+`FakeOAuthServer` is a full in-memory OAuth server for testing clients. It now serves the `/.well-known/oauth-authorization-server` discovery endpoint automatically, making it compatible with `AuthServerDiscovery.fromKnownAuthServer(...)`:
+
+```kotlin
+val fakeServer = FakeOAuthServer(
+    tokenPath = "/oauth2/token",
+    authPath = "/auth"
+)
+
+// The fake automatically serves discovery at:
+// GET /.well-known/oauth-authorization-server
+// Use AuthServerDiscovery to discover the fake's endpoints:
+val discovery = AuthServerDiscovery.fromKnownAuthServer(Uri.of("http://fake-server"))
+```
+
+`AuthServerDiscovery` failure messages include the target URI and HTTP status for easier debugging.
+
 ## Gotchas
 
 - **InsecureCookieBasedOAuthPersistence is for dev only**: It stores tokens in plain cookies. Implement `OAuthPersistence` with secure storage for production.
