@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git clone:*)",
+      "Bash(git -C:*)",
+      "Bash(git fetch:*)",
+      "Bash(git diff:*)",
+      "Bash(git config:*)",
+      "Bash(rm -rf ./tmp:*)",
+      "Bash(rm -rf tmp:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Bash(wc:*)",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Agent"
+    ]
+  }
+}
