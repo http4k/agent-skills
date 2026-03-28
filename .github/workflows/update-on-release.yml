@@ -38,13 +38,13 @@ jobs:
             --max-budget-usd 5 \
             "Read the file .claude/commands/generate-skill.md for instructions. Follow those instructions exactly, using version ${VERSION} as the version argument. The \$ARGUMENTS placeholder in that file should be replaced with ${VERSION}."
 
-      - name: Verify generation
+      - name: Clean up and verify generation
         run: |
           VERSION="${{ github.event.client_payload.version || github.event.inputs.version }}"
+          rm -rf ./tmp/http4k
           head -1 plugins/http4k/skills/http4k-development/SKILL.md | grep -q "^---"
           grep -q "$VERSION" plugins/http4k/.claude-plugin/plugin.json
           grep -q "$VERSION" .claude-plugin/marketplace.json
-          test ! -d ./tmp/http4k
 
       - name: Commit and tag
         run: |
