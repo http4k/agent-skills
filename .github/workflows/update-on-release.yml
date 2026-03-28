@@ -27,6 +27,16 @@ jobs:
       - name: Install Claude Code CLI
         run: npm install -g @anthropic-ai/claude-code
 
+      - name: Clone http4k source
+        run: |
+          VERSION="${{ github.event.client_payload.version || github.event.inputs.version }}"
+          PREV_VERSION=$(grep -o '"version":[[:space:]]*"[^"]*"' plugins/http4k/.claude-plugin/plugin.json | grep -o '[0-9][^"]*')
+          rm -rf ./tmp/http4k
+          git clone --depth 1 --branch "$VERSION" https://github.com/http4k/http4k.git ./tmp/http4k
+          if [ -n "$PREV_VERSION" ] && [ "$PREV_VERSION" != "$VERSION" ]; then
+            git -C ./tmp/http4k fetch --depth 1 origin tag "$PREV_VERSION"
+          fi
+
       - name: Generate skill content
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -36,7 +46,7 @@ jobs:
             --permission-mode dontAsk \
             --model sonnet \
             --max-budget-usd 5 \
-            "Read the file .claude/commands/generate-skill.md for instructions. Follow those instructions exactly, using version ${VERSION} as the version argument. The \$ARGUMENTS placeholder in that file should be replaced with ${VERSION}."
+            "Read the file .claude/commands/generate-skill.md for instructions. Follow those instructions exactly, using version ${VERSION} as the version argument. The \$ARGUMENTS placeholder in that file should be replaced with ${VERSION}. The http4k source has already been cloned to ./tmp/http4k with the required tags fetched."
 
       - name: Clean up and verify generation
         run: |
