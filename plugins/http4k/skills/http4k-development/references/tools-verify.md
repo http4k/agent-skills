@@ -59,10 +59,10 @@ The task runs in the `verification` group and is wired as a dependency of `compi
 ## Output Example
 
 ```
-Verifying 3 http4k module(s)...
+Verifying 2 http4k module(s)...
   org.http4k:http4k-core:6.40.0.0           jar ✓   sbom ✓   provenance ✓   license ✓
   org.http4k:http4k-server-jetty:6.40.0.0   jar ✓   sbom ✓   provenance -   license -
-Verified: 3 modules, 6 signatures
+Verified: 2 modules, 8 signatures
 ```
 
 A `-` means the artifact type was not available (not published with that classifier).
