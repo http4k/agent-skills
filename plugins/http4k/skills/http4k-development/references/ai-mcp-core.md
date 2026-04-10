@@ -237,6 +237,40 @@ ElicitationResponse.Error("user cancelled")
 
 On the **client side**, errors transmitted via domain error code `-32050` are reconstructed as `*.Error` subtypes rather than surfacing as `McpError.Protocol`.
 
+## Initialize Types
+
+`InitializeHandler` is the function type for handling MCP client-server handshake:
+
+```kotlin
+typealias InitializeHandler = (InitializeRequest) -> InitializeResponse
+
+// InitializeRequest carries:
+data class InitializeRequest(
+    val clientInfo: VersionedMcpEntity,
+    val capabilities: ClientCapabilities,
+    val protocolVersion: ProtocolVersion,
+    val connectRequest: Request? = null  // raw HTTP request
+)
+
+// InitializeResponse is a sealed interface:
+sealed interface InitializeResponse {
+    data class Ok(
+        val serverInfo: VersionedMcpEntity,
+        val capabilities: ServerCapabilities,
+        val protocolVersion: ProtocolVersion,
+        val instructions: String? = null
+    ) : InitializeResponse
+
+    data class Error(val message: String) : InitializeResponse
+}
+```
+
+`InitializeFilter` wraps `InitializeHandler` for cross-cutting concerns (analogous to `HttpFilter`):
+
+```kotlin
+val filter = InitializeFilter { next -> { req -> next(req) } }
+```
+
 ## McpResult Helpers
 
 ```kotlin

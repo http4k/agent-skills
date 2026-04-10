@@ -38,6 +38,40 @@ val mcpApp = mcp(
 mcpApp.asServer(Undertow(8080)).start()
 ```
 
+## Custom Initialize Handler
+
+The MCP handshake uses an `InitializeHandler` that can be customised for protocol version negotiation, capability filtering, or request-level auth:
+
+```kotlin
+// Default: SimpleInitializeHandler negotiates protocol version automatically
+val protocol = McpProtocol(
+    sessions,
+    ServerInitializer(SimpleInitializeHandler(metadata)),
+    tools = tools
+)
+
+// Custom handler — inspect the HTTP request or reject initialization
+val customInitializer: InitializeHandler = { req: InitializeRequest ->
+    if (req.protocolVersion < minVersion)
+        InitializeResponse.Error("Unsupported protocol version")
+    else
+        InitializeResponse.Ok(
+            serverInfo = metadata.entity,
+            capabilities = metadata.capabilities,
+            protocolVersion = req.protocolVersion
+        )
+}
+
+val protocol = McpProtocol(
+    sessions,
+    ServerInitializer(customInitializer),
+    tools = tools
+)
+```
+
+`InitializeRequest` carries `clientInfo`, `capabilities`, `protocolVersion`, and the raw HTTP `connectRequest`.
+`InitializeResponse` is a sealed interface with `Ok` and `Error` subtypes.
+
 ## Quick Server from Single Capability
 
 ```kotlin
@@ -171,8 +205,22 @@ ToolResponse.Ok("plain text result")
 ToolResponse.Ok(Content.Text("hello"), Content.Text("world"))
 ```
 
+## RenderMcpApp Extra Capabilities
+
+`RenderMcpApp` accepts an `extraCapabilities` list for adding additional tools or resources alongside the rendered app:
+
+```kotlin
+RenderMcpApp(
+    name = "myApp",
+    description = "My MCP app",
+    uri = Uri.of("/app"),
+    extraCapabilities = listOf(myExtraTool)
+) { req -> renderHtml(req) }
+```
+
 ## Gotchas
 
+- **`McpProtocol` constructor changed**: `ServerMetaData` is no longer the first parameter. Pass `ServerInitializer(SimpleInitializeHandler(metadata))` as the second argument after `sessions`. The old constructor style `McpProtocol(metadata, sessions, ...)` no longer compiles.
 - **Use `mcp()` not `mcpHttpStreaming()`**: `mcpHttpStreaming()` is deprecated — use `mcp()` as a direct replacement.
 - `HttpStreamingMcp` is recommended for most use cases (supports progress, notifications)
 - `StdIoMcpSessions` is for subprocess-based MCP servers (e.g., CLI tools)

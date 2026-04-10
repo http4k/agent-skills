@@ -13,6 +13,14 @@ In-memory MCP client for testing MCP servers without network transport.
 // In-memory testing against a PolyHandler (no network)
 val client = mcpServer.testMcpClient()
 
+// With specific client capabilities and protocol version
+val client = TestMcpClient(
+    poly = mcpServer,
+    connectRequest = Request(POST, "/mcp"),
+    clientCapabilities = ClientCapabilities.All,  // default
+    protocolVersion = LATEST_VERSION              // default
+)
+
 // Or via McpClientFactory
 val factory = McpClientFactory.Test(mcpServer)
 val client = factory()
