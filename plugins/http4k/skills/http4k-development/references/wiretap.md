@@ -134,21 +134,41 @@ fun `test gets McpClient`(client: McpClient) {
 ### RenderMode
 
 ```kotlin
-Intercept(app)                      // OnFailure (default) — HTML report only on test failure
-Intercept(app, RenderMode.Always)   // Always generate report
-Intercept(app, RenderMode.Never)    // Never generate report
+Intercept { http() }                    // OnFailure (default) — report only on test failure
+Intercept(RenderMode.Always) { http() } // Always generate report
+Intercept(RenderMode.Never) { http() }  // Never generate report
 ```
 
-Reports are written to a temp directory. The path is printed to stdout after each test.
+Reports are written to `build/reports/http4k/wiretap/<package>/<TestName>.<method>`. Each test generates two files:
+- `<name>.html` — full interactive HTML report (traces, traffic, stdout/stderr)
+- `<name>.md` — living document markdown with sequence diagram and HTTP transactions
+
+The HTML report path is also published as a JUnit report entry and printed to stdout.
 
 ### Accessing recorded data in tests
 
+Pass `traceStore`, `logStore`, `transactionStore` as constructor parameters to share stores with the test:
+
 ```kotlin
-intercept.traceStore.traces(Ascending)     // Map<TraceId, List<SpanData>>
-intercept.transactionStore.list(Descending) // List<WiretapTransaction> with Direction
-intercept.logStore                          // log records per span
-intercept.capturedStdOut                    // stdout captured during the test
-intercept.capturedStdErr                    // stderr captured during the test
+class MyTest {
+    private val traceStore = TraceStore.InMemory()
+    private val transactionStore = TransactionStore.InMemory()
+
+    @RegisterExtension
+    @JvmField
+    val intercept = Intercept(
+        traceStore = traceStore,
+        transactionStore = transactionStore,
+        appFn = { MyApp(http(), otel("my-service")) }
+    )
+
+    @Test
+    fun `spans are recorded`(http: HttpHandler) {
+        http(Request(GET, "/"))
+        assertThat(traceStore.traces(Ascending).size, greaterThan(0))
+        assertThat(transactionStore.list(Descending).size, greaterThan(0))
+    }
+}
 ```
 
 `WiretapTransaction.direction` is `Direction.Inbound` (server received) or `Direction.Outbound` (client sent).

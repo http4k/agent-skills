@@ -33,7 +33,7 @@ http4kVerify {
 
 ## What It Verifies
 
-For each `org.http4k` artifact on the `runtimeClasspath`, the plugin checks up to four sigstore bundles:
+For each `org.http4k` artifact on the `runtimeClasspath` and `testRuntimeClasspath`, the plugin checks up to four sigstore bundles:
 
 | Check | Artifact Classifier | Bundle Classifier |
 |-------|--------------------|--------------------|

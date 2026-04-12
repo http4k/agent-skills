@@ -162,7 +162,7 @@ val tracedMcp = McpFilters.OpenTelemetryTracing(openTelemetry)
 val tracedMcp = McpFilters.OpenTelemetryTracing().then(mcpHandler)
 ```
 
-Each span is named after the JSON-RPC method (e.g. `tools/call`) and includes attributes:
+Each span is named after the JSON-RPC method plus the target name when available (e.g. `tools/call MyTool`, `prompts/get MyPrompt`) and includes attributes:
 - `mcp.method.name` — the JSON-RPC method
 - `mcp.session.id` — the MCP session ID
 - `mcp.protocol.version` — the negotiated protocol version
@@ -170,13 +170,30 @@ Each span is named after the JSON-RPC method (e.g. `tools/call`) and includes at
 
 ### Span Modifiers
 
-Default span modifiers add method-specific attributes:
+Default span modifiers (`defaultMcpOtelSpanModifiers`) add method-specific attributes:
 
-- **`CallToolSpanModifiers`** — adds `gen_ai.operation.name=execute_tool`, `gen_ai.tool.name`; sets ERROR status on tool errors
+- **`CallToolSpanModifiers`** — adds `gen_ai.operation.name=execute_tool`, `gen_ai.tool.name`; sets ERROR status on tool errors (reads from `result.isError`)
+- **`CompletionSpanModifiers`** — adds `gen_ai.operation.name=complete`, `mcp.completion.ref` (name or URI of the completion ref)
 - **`GetPromptSpanModifiers`** — adds `gen_ai.operation.name=get_prompt`, `gen_ai.prompt.name`
 - **`ReadResourceSpanModifiers`** — adds `gen_ai.operation.name=read_resource`, `mcp.resource.uri`
 
 Custom modifiers implement `McpOpenTelemetrySpanModifiers` (provides `method`, `request()`, `response()` hooks).
+
+### Detail Span Modifiers (Opt-In)
+
+These modifiers capture request arguments and response content. They may contain sensitive data and are **not** included in `defaultMcpOtelSpanModifiers` — add them explicitly:
+
+```kotlin
+val tracedMcp = McpFilters.OpenTelemetryTracing(
+    openTelemetry,
+    spanModifiers = defaultMcpOtelSpanModifiers + listOf(
+        CallToolDetailSpanModifiers,    // adds gen_ai.tool.call.arguments, gen_ai.tool.call.result
+        GetPromptDetailSpanModifiers,   // adds gen_ai.prompt.arguments, gen_ai.prompt.result
+        CompletionDetailSpanModifiers,  // adds completion arguments
+        ReadResourceDetailSpanModifiers // adds resource content
+    )
+).then(mcpHandler)
+```
 
 ### Transport Span Linking
 
@@ -207,15 +224,28 @@ ToolResponse.Ok(Content.Text("hello"), Content.Text("world"))
 
 ## RenderMcpApp Extra Capabilities
 
-`RenderMcpApp` accepts an `extraCapabilities` list for adding additional tools or resources alongside the rendered app:
+`RenderMcpApp` creates a combined Tool + Resource capability. Use `uiUri` (not `uri`) and `toolVisibility` (not `visibility`):
 
 ```kotlin
+// Standard form — provide an McpAppHandler (renders HTML/UI content)
 RenderMcpApp(
     name = "myApp",
     description = "My MCP app",
-    uri = Uri.of("/app"),
+    uiUri = Uri.of("/app"),
+    toolVisibility = listOf(McpAppVisibility.Desktop),
     extraCapabilities = listOf(myExtraTool)
 ) { req -> renderHtml(req) }
+
+// Advanced form — provide a full ResourceHandler for custom resource serving
+RenderMcpApp(
+    name = "myApp",
+    description = "My MCP app",
+    uiUri = Uri.of("/app"),
+    extraCapabilities = listOf(myExtraTool),
+    toolVisibility = null,
+    mimeType = McpApps.MIME_TYPE,
+    resourceHandler = { req -> ResourceResponse.Ok(Resource.Content.Text("...", req.uri)) }
+)
 ```
 
 ## Gotchas
