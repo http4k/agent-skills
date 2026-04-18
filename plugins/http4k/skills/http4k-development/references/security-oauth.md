@@ -228,6 +228,10 @@ val discovery = AuthServerDiscovery.fromKnownAuthServer(Uri.of("http://fake-serv
 
 `AuthServerDiscovery` failure messages include the target URI and HTTP status for easier debugging.
 
+`AuthServerDiscovery.fromKnownAuthServer()` now validates that the `issuer` field in the discovery document matches the origin of the server URI (RFC 8414 §3.3). A mismatch returns `Failure` with an exception describing the discrepancy.
+
+`AuthServerDiscovery.fromProtectedResource()` now accepts an optional `expectedResource: Uri = resourceUri` parameter and validates that the `resource` field in the resource metadata matches the expected resource (RFC 9728 §3.3). Pass `expectedResource` explicitly when the protected resource URI and the registered resource URI differ.
+
 ## Gotchas
 
 - **InsecureCookieBasedOAuthPersistence is for dev only**: It stores tokens in plain cookies. Implement `OAuthPersistence` with secure storage for production.

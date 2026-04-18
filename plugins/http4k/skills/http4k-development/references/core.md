@@ -100,6 +100,9 @@ uri.removeQuery("key")
 uri.extend(otherUri)               // combine paths and queries
 uri.relative("other-path")         // resolve relative URI against base
 uri.credentials(Credentials("u", "p"))
+
+// Same-origin check (scheme + host + effective port match)
+uri.isSameOrigin(other)            // treats http:80 and https:443 as default ports
 ```
 
 ## Filter
@@ -172,6 +175,7 @@ ClientFilters.SetBaseUriFrom(Uri.of("http://api.example.com"))
 ClientFilters.SetHostFrom(Uri.of("http://backend:8080"))
 
 // Follow redirects (handles both absolute and relative Location headers)
+// HTTPS → HTTP downgrades are NOT followed — the redirect response is returned as-is
 ClientFilters.FollowRedirects()
 
 // Request tracing (Zipkin-style)

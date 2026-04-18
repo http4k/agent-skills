@@ -10,18 +10,18 @@ MCP server implementation — expose tools, resources, and prompts over multiple
 ## Server Setup
 
 ```kotlin
-val tools = ServerTools(listOf(
+val tools = tools(
     ToolCapability(myTool, myToolHandler),
     ToolCapability(otherTool, otherHandler)
-))
+)
 
-val resources = ServerResources(listOf(
+val resources = resources(
     ResourceCapability(myResource, myResourceHandler)
-))
+)
 
-val prompts = ServerPrompts(listOf(
+val prompts = prompts(
     PromptCapability(myPrompt, myPromptHandler)
-))
+)
 ```
 
 ## Creating MCP Server (Routing Function)
@@ -46,7 +46,7 @@ The MCP handshake uses an `InitializeHandler` that can be customised for protoco
 // Default: SimpleInitializeHandler negotiates protocol version automatically
 val protocol = McpProtocol(
     sessions,
-    ServerInitializer(SimpleInitializeHandler(metadata)),
+    initializer(SimpleInitializeHandler(metadata)),
     tools = tools
 )
 
@@ -64,7 +64,7 @@ val customInitializer: InitializeHandler = { req: InitializeRequest ->
 
 val protocol = McpProtocol(
     sessions,
-    ServerInitializer(customInitializer),
+    initializer(customInitializer),
     tools = tools
 )
 ```
@@ -72,13 +72,25 @@ val protocol = McpProtocol(
 `InitializeRequest` carries `clientInfo`, `capabilities`, `protocolVersion`, and the raw HTTP `connectRequest`.
 `InitializeResponse` is a sealed interface with `Ok` and `Error` subtypes.
 
-## Quick Server from Single Capability
+## Quick Server from Single or Multiple Capabilities
 
 ```kotlin
-// Convert any ServerCapability directly to a server
+// Convert any ServerCapability directly to a server (optional name parameter)
 val tool = Tool("greet", "Say hello") bind { Ok(Text("Hello!")) }
+tool.asServer(JettyLoom(4001))                    // name defaults to "http4k-mcp"
+tool.asServer(JettyLoom(4001), name = "my-server")
 
-tool.asServer(Undertow(8080))  // convenience extension
+// Combine multiple capability instances and serve together
+val myTools = tools(tool1, tool2)
+val myResources = resources(resource1)
+(myTools + myResources).asServer(JettyLoom(4001))
+
+// Functional style — compose capabilities then serve
+val tools = tools(Tool("time", "get the time") bind {
+    ToolResponse.Ok(listOf(Content.Text(Instant.now().toString())))
+})
+val prompts = prompts(Prompt("p1", "desc") bind { PromptResponse.Ok(listOf(), "desc") })
+(tools + prompts).asServer(JettyLoom(4001)).start()
 ```
 
 ## Transports (Low-Level)
@@ -129,18 +141,22 @@ NoMcpSecurity  // default
 ## Observable Capabilities (Change Notifications)
 
 ```kotlin
-val tools = ServerTools(initialTools)
+val myTools = tools(ToolCapability(initialTool, handler))
 
 // Dynamically add/remove tools — clients are notified
-tools.add(ToolCapability(newTool, newHandler))
-tools.remove(ToolName.of("old-tool"))
+myTools.add(ToolCapability(newTool, newHandler))
+myTools.remove(ToolName.of("old-tool"))
 ```
 
-## Capability Pack (Composing Capabilities)
+## Composing Capabilities
 
 ```kotlin
-val capabilities = CapabilityPack(tools, resources, prompts)
-val mcpHandler = HttpStreamingMcp(capabilities)
+// Use capabilities() to pack multiple ServerCapability instances
+val pack = capabilities(myTools, myResources, myPrompts)
+val mcpHandler = HttpStreamingMcp(pack)
+
+// Or use + operator directly on capability instances
+val combined = myTools + myResources + myPrompts
 ```
 
 ## Logging from Server
@@ -250,7 +266,9 @@ RenderMcpApp(
 
 ## Gotchas
 
-- **`McpProtocol` constructor changed**: `ServerMetaData` is no longer the first parameter. Pass `ServerInitializer(SimpleInitializeHandler(metadata))` as the second argument after `sessions`. The old constructor style `McpProtocol(metadata, sessions, ...)` no longer compiles.
+- **`ServerTools`/`ServerResources`/`ServerPrompts`/`ServerInitializer` replaced**: Use `tools()`, `resources()`, `prompts()`, `initializer()` factory functions instead. The old class names no longer exist.
+- **`compose()` removed**: Use `capabilities()` or the `+` operator to combine `ServerCapability` instances.
+- **`McpProtocol` constructor changed**: `ServerMetaData` is no longer the first parameter. Pass `initializer(SimpleInitializeHandler(metadata))` as the second argument after `sessions`. The old constructor style `McpProtocol(metadata, sessions, ...)` no longer compiles.
 - **Use `mcp()` not `mcpHttpStreaming()`**: `mcpHttpStreaming()` is deprecated — use `mcp()` as a direct replacement.
 - `HttpStreamingMcp` is recommended for most use cases (supports progress, notifications)
 - `StdIoMcpSessions` is for subprocess-based MCP servers (e.g., CLI tools)

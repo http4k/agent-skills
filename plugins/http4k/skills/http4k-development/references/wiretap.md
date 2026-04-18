@@ -69,6 +69,8 @@ val wiretap = Wiretap(
         if (tx.request.uri.path.startsWith("/health")) null else tx
     },
     bodyHydration = BodyHydration.All,  // record full bodies; use None for large payloads
+    livingDocSections = defaultLivingDocSections,    // customise living doc markdown sections
+    traceReportTabs = defaultTraceReportTabs,        // customise trace report HTML tabs
 )
 ```
 
@@ -100,11 +102,16 @@ class MyTest {
 class MyTest {
     @RegisterExtension
     @JvmField
-    val intercept = Intercept {
-        // `this` is a Context — provides http(), otel(), clock(), random()
-        val outbound: HttpHandler = { Response(OK) }
-        MyApp(http(outbound), otel("my-service"))
-    }
+    val intercept = Intercept(
+        livingDocsSections = defaultLivingDocSections,  // optional: customise markdown sections
+        traceReportTabs = defaultTraceReportTabs,       // optional: customise HTML report tabs
+        reportDir = File("build/reports/wiretap"),      // optional: override output directory
+        appFn = {
+            // `this` is a Context — provides http(), otel(), clock(), random()
+            val outbound: HttpHandler = { Response(OK) }
+            MyApp(http(outbound), otel("my-service"))
+        }
+    )
 
     @Test
     fun `spans are recorded`(http: HttpHandler) {
