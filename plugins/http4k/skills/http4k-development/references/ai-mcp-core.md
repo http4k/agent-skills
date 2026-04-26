@@ -125,9 +125,14 @@ Return `PromptResponse.Error("message")` to surface a domain error to the client
 fun handler(req: ToolRequest): ToolResponse {
     req.client.log("Processing request", LogLevel.info)
     req.client.progress(50, 100.0, "halfway done")
+    req.client.requestRoots()               // ask connected client to send its roots list
     return ToolResponse.Ok(...)
 }
 ```
+
+`Client.updateTask(task, meta)` updates a long-running task state. The `meta` parameter defaults to `Meta.default`.
+
+`Client.requestRoots(meta)` sends a `roots/list` request to the connected MCP client, triggering the client's registered roots callback.
 
 ## Meta and MetaKey Lens System
 
@@ -184,6 +189,23 @@ val payload: MyPayload? = myLens(meta)  // nullable — returns null if key abse
 ```kotlin
 open class MetaField<T : Any>(val key: String)
 ```
+
+## Elicitations
+
+`ToolResponse.ElicitationRequired` asks the client for more information before the tool can complete:
+
+```kotlin
+ToolResponse.ElicitationRequired(
+    elicitations = listOf(McpElicitations.Request.Params.Url(...)),
+    message = "This request requires more information."
+)
+```
+
+The `elicitations` list type is `List<McpElicitations.Request.Params.Url>`.
+
+## Header Names
+
+The MCP protocol version is transmitted as `Mcp-Protocol-Version` (mixed-case). The lens accessor `Header.MCP_PROTOCOL_VERSION` uses this casing — do not use `MCP-Protocol-Version` when constructing requests manually.
 
 ## ServerCapabilities Extensions
 

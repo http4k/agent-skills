@@ -45,3 +45,4 @@ fakeDynamo.behave()
 - Condition expressions and projections are evaluated in-memory
 - Extends `ChaoticHttpHandler`
 - S3 bucket sources for `ImportTable` require a separate FakeS3
+- `PutItem` with a `ConditionExpression` evaluates the condition against an empty item when the target item does not yet exist. This means `attribute_not_exists(pk)` works correctly as a "put-only-if-new" guard.

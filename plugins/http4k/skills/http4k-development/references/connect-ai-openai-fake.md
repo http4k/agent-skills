@@ -66,9 +66,14 @@ fake.returnStatus(Status.SERVICE_UNAVAILABLE)   // simulate downtime
 fake.behave()                                    // restore normal behavior
 ```
 
+## Log Probability Support
+
+The fake supports `logprobs` and `top_logprobs` transparently. When `logprobs = true` is set in the request, the fake generates synthetic (deterministic) log probs for each token in the response. Token values are stable across runs with the same input, making fake-based tests reproducible.
+
 ## Gotchas
 
 - Fake accepts any API key (Bearer auth is validated as truthy but not checked)
 - Default models match real OpenAI model names
 - Image generation returns localhost URLs pointing to fake-served PNG files
 - Extends `ChaoticHttpHandler` — use `WithRunningFake` for integration tests
+- Synthetic log probs are computed from token hash codes — they are deterministic but not realistic

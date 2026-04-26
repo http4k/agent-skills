@@ -35,13 +35,15 @@ val client = SseMcpClient(Request(GET, "http://localhost:8080/mcp"))
 
 ```kotlin
 client.use { mcp ->
-    val caps = mcp.start().getOrThrow()
-    println("Connected. Tools: ${caps.tools != null}")
+    val caps: McpInitialize.Response.Result = mcp.start().getOrThrow()
+    println("Connected. Tools: ${caps.capabilities.tools != null}")
 
     // ... use the client
 }
 // AutoCloseable — client.stop() called on exit
 ```
+
+`start()` returns `McpResult<McpInitialize.Response.Result>` — the inner type changed from `McpInitialize.Response` to `McpInitialize.Response.Result`.
 
 ## Tools
 

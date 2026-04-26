@@ -97,8 +97,46 @@ openAI.chatCompletion(
 )
 ```
 
+## Structured Output (JSON Schema Response Format)
+
+```kotlin
+// Use JsonSchemaSpec to name the schema and mark it strict
+openAI.chatCompletion(
+    model, messages,
+    response_format = ResponseFormat.JsonSchema(
+        JsonSchemaSpec(
+            name = "my_response",
+            schema = mapOf("type" to "object", "properties" to mapOf(...)),
+            strict = true
+        )
+    )
+)
+```
+
+`ResponseFormat.JsonSchema` serialises to the nested OpenAI wire format (`json_schema.name`, `json_schema.schema`). `ResponseFormatAdapterFactory` registered in `OpenAIMoshi` handles this mapping automatically.
+
+## Log Probabilities
+
+```kotlin
+// Request log probs for each output token
+openAI.chatCompletion(
+    model, messages,
+    logprobs = true,
+    top_logprobs = 3   // up to 5 top alternatives per token
+)
+
+// Access in response
+val tokenLogProbs: List<TokenLogProb>? = response.choices[0].logprobs?.content
+// TokenLogProb has: token, logprob, bytes, top_logprobs: List<TopLogProb>
+```
+
+## Reasoning Content
+
+`ChoiceDetail` exposes `reasoning` and `reasoning_content` fields for models that return chain-of-thought reasoning in the response.
+
 ## Gotchas
 
 - `chatCompletion` always returns `Sequence<CompletionResponse>` (even non-streaming returns a single-element sequence)
 - Non-streaming mode: iterate `successValue()` — it completes after one element
 - `Temperature.ONE` is the default (not 0.7)
+- `ResponseFormat.JsonSchema` requires `JsonSchemaSpec` to carry the schema name; the `name` field on `JsonSchema` reflects this and is serialised correctly by `OpenAIMoshi`

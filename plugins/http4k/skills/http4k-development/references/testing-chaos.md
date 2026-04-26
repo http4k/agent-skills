@@ -25,6 +25,7 @@ engine.enable(ChaosBehaviours.Latency(100.millis, 500.millis))
 
 ```kotlin
 ChaosBehaviours.ReturnStatus(INTERNAL_SERVER_ERROR)   // return fixed status
+ChaosBehaviours.ReturnResponse(Response(OK).body("forced")) // return a specific full response
 ChaosBehaviours.Latency(100.millis, 500.millis)       // random delay
 ChaosBehaviours.ThrowException(RuntimeException("!")) // throw exception
 ChaosBehaviours.NoBody()                              // strip response body
@@ -36,6 +37,14 @@ ChaosBehaviours.StackOverflow()                        // stack overflow (destru
 ChaosBehaviours.KillProcess()                          // exit JVM (destructive)
 ChaosBehaviours.BlockThread()                          // deadlock (destructive)
 ```
+
+`ReturnResponse` is also supported in the chaos JSON format used by the Remote Control API:
+
+```json
+{"type": "response", "status": 503, "headers": {"Retry-After": "60"}, "body": "unavailable"}
+```
+
+The `headers` and `body` fields are optional.
 
 ## Stages and Triggers
 
