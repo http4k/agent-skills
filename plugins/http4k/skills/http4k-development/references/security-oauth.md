@@ -153,6 +153,78 @@ val refreshRequest = ClientFilters.OAuthRefreshToken(
 val tokenResponse = refreshRequest(Request(POST, "https://auth.example.com/token"))
 ```
 
+## JWT Bearer Grant (RFC 7523)
+
+For enterprise auth flows where the client authenticates with a JWT assertion instead of client credentials:
+
+```kotlin
+// Single-request JWT assertion grant
+val filter = ClientFilters.OAuthJwtAssertion(
+    assertion = mySignedJwt,
+    scopes = listOf("service:read"),
+    resource = Uri.of("https://api.example.com")
+).then(httpClient)
+```
+
+`OAuthWebForms.assertion` is the corresponding form field (`assertion`) used in the token request body.
+
+## RefreshingOAuthToken (Machine-to-Machine)
+
+Three overloads for different levels of customisation:
+
+```kotlin
+// 1. Simple — client_credentials for both initial grant and refresh
+ClientFilters.RefreshingOAuthToken(
+    config = OAuthProviderConfig(...),
+    backend = httpClient
+)
+
+// 2. Custom initial grant, client_credentials refresh
+ClientFilters.RefreshingOAuthToken(
+    clientCredentials = Credentials("id", "secret"),
+    tokenUri = Uri.of("https://auth.example.com/token"),
+    backend = httpClient,
+    oAuthFlowFilter = ClientFilters.OAuthJwtAssertion(jwtAssertion)  // custom initial grant
+)
+
+// 3. Fully pluggable — custom grant AND custom refresh
+ClientFilters.RefreshingOAuthToken(
+    tokenUri = Uri.of("https://auth.example.com/token"),
+    backend = httpClient,
+    oAuthFlowFilter = myInitialGrantFilter,
+    oAuthRefreshFilter = { refreshToken -> myRefreshFilter(refreshToken) }
+)
+```
+
+## AutoDiscoveryOAuthToken (Discover + Obtain Tokens)
+
+Discovers the authorization server and obtains tokens, with the same three overloads:
+
+```kotlin
+// 1. Simple client_credentials
+ClientFilters.AutoDiscoveryOAuthToken(
+    authServerDiscovery = AuthServerDiscovery.fromKnownAuthServer(Uri.of("https://auth.example.com")),
+    clientCredentials = Credentials("id", "secret"),
+    backend = httpClient
+)
+
+// 2. Custom initial grant, client_credentials refresh
+ClientFilters.AutoDiscoveryOAuthToken(
+    authServerDiscovery = discovery,
+    clientCredentials = Credentials("id", "secret"),
+    backend = httpClient,
+    oAuthFlowFilter = ClientFilters.OAuthJwtAssertion(jwtAssertion)
+)
+
+// 3. Fully pluggable
+ClientFilters.AutoDiscoveryOAuthToken(
+    authServerDiscovery = discovery,
+    backend = httpClient,
+    oAuthFlowFilter = myGrantFilter,
+    oAuthRefreshFilter = { token -> myRefreshFilter(token) }
+)
+```
+
 ## Response Types
 
 ```kotlin

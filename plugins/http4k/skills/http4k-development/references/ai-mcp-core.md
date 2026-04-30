@@ -203,9 +203,20 @@ ToolResponse.ElicitationRequired(
 
 The `elicitations` list type is `List<McpElicitations.Request.Params.Url>`.
 
-## Header Names
+## Header Names and Lenses
 
 The MCP protocol version is transmitted as `Mcp-Protocol-Version` (mixed-case). The lens accessor `Header.MCP_PROTOCOL_VERSION` uses this casing — do not use `MCP-Protocol-Version` when constructing requests manually.
+
+```kotlin
+Header.MCP_SESSION_ID       // Mcp-Session-Id — identifies the MCP session
+Header.MCP_PROTOCOL_VERSION // Mcp-Protocol-Version — negotiated protocol version
+Header.MCP_METHOD           // Mcp-Method — declares the MCP RPC method for the request
+Header.MCP_NAME             // Mcp-Name — carries the tool/prompt/resource name
+```
+
+`Header.MCP_METHOD` and `Header.MCP_NAME` are required by the MCP DRAFT protocol version. Servers validate that these header values match the corresponding values in the JSON-RPC body — a mismatch returns a `HeaderMismatchError`. The HTTP MCP clients (`HttpStreamingMcpClient`, `HttpNonStreamingMcpClient`) set these headers automatically for tool calls, prompt gets, and resource reads.
+
+`ProtocolVersion.DRAFT` is the constant for the draft protocol version that enables stricter header validation. Clients and servers negotiate the protocol version during the initialize handshake.
 
 ## ServerCapabilities Extensions
 

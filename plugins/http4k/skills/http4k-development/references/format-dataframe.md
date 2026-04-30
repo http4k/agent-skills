@@ -66,6 +66,7 @@ val names: List<String> = df.name.toList()
 | `skipLines` | `Int` | Lines to skip before header |
 | `readLines` | `Int?` | Max lines to read (`null` = all) |
 | `parserOptions` | `ParserOptions?` | Locale, null strings, etc. |
+| `charset` | `Charset` | Character encoding (default `UTF_8`) |
 | `compression` | `Compression<*>` | Input compression format |
 
 ## Gotchas

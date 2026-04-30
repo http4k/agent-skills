@@ -254,6 +254,22 @@ wsHandler.testWsClient(Request(GET, "/")).useClient {
 }  // auto-closes
 ```
 
+## SSE Headers
+
+```kotlin
+// Last-Event-ID — track reconnect position (per SSE spec)
+val lastId: SseEventId? = Header.LAST_EVENT_ID(request)
+
+// X-Accel-Buffering — control Nginx proxy buffering for SSE
+// Set to "no" on the response to prevent Nginx from buffering the SSE stream
+val buffering: XAccelBuffering = Header.X_ACCEL_BUFFERING(response)  // defaults to XAccelBuffering.no
+response.with(Header.X_ACCEL_BUFFERING of XAccelBuffering.no)
+
+enum class XAccelBuffering { yes, no }
+```
+
+Setting `X-Accel-Buffering: no` is required when an Nginx reverse proxy sits in front of an SSE endpoint — without it, Nginx buffers the entire response and the client sees no events until the connection closes.
+
 ## Gotchas
 
 - **WsClient close semantics**: Closing with `WsStatus.NORMAL` ends the `received()` sequence. Closing with any other status throws `ClosedWebsocket(status)` when reading.

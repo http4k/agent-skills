@@ -69,6 +69,7 @@ val wiretap = Wiretap(
         if (tx.request.uri.path.startsWith("/health")) null else tx
     },
     bodyHydration = BodyHydration.All,  // record full bodies; use None for large payloads
+    resetGlobalOtel = true,            // reset and configure GlobalOpenTelemetry on start (default true)
     livingDocSections = defaultLivingDocSections,    // customise living doc markdown sections
     traceReportTabs = defaultTraceReportTabs,        // customise trace report HTML tabs
 )
@@ -124,11 +125,20 @@ class MyTest {
 ### Poly/MCP apps
 
 ```kotlin
+// Wrap a whole MCP server (PolyHandler) — preferred for complete MCP apps
 @RegisterExtension
 @JvmField
-val intercept = Intercept.poly {
-    // wrap a PolyHandler (HTTP + SSE/WebSocket)
-    myPolyApp(http(), otel("my-service"))
+val intercept = Intercept.mcp {
+    // synonym for Intercept.poly — wraps a PolyHandler (HTTP + SSE/WebSocket/MCP)
+    myMcpApp(http(), otel("my-service"))
+}
+
+// Wrap individual MCP ServerCapability (not a full server)
+@RegisterExtension
+@JvmField
+val intercept = Intercept.mcpCapabilities {
+    // Returns capabilities that will be assembled into an MCP server for testing
+    listOf(myToolCapability, myResourceCapability)
 }
 
 @Test
@@ -137,6 +147,8 @@ fun `test gets McpClient`(client: McpClient) {
     val tools = client.tools().list()
 }
 ```
+
+`Intercept.mcp` (wraps a full `PolyHandler`) replaces the old `Intercept.mcp` that previously accepted `ServerCapability` — that variant is now `Intercept.mcpCapabilities`.
 
 ### RenderMode
 

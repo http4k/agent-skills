@@ -212,6 +212,7 @@ Header.required("X-Custom")
 Header.optional("X-Custom")
 Header.CONTENT_TYPE                             // Pre-built ContentType lens
 Header.LOCATION                                 // Pre-built Uri lens
+Header.ALLOW                                    // RFC 9110 §10.2.1 — multi-value enum of allowed HTTP methods
 ```
 
 Header lenses strip surrounding quotes from values per RFC 2045 (e.g., `"value"` becomes `value`).

@@ -128,6 +128,51 @@ val response = chat(ChatRequest(
 ))
 ```
 
+## MCP Header Filters (HTTP Clients)
+
+`HttpStreamingMcpClient` and `HttpNonStreamingMcpClient` automatically populate MCP protocol headers for tool calls, prompt gets, and resource reads. These filters are not typically constructed directly, but are available for custom HTTP clients:
+
+```kotlin
+// Adds Mcp-Method and Mcp-Name headers to a request
+PopulateMcpHeaders(method = McpRpcMethod.of("tools/call"), name = "calculator")
+
+// Adds Mcp-Method, Mcp-Name, and optional Mcp-Param-* headers derived
+// from tool schema x-mcp-header annotations and the call arguments
+PopulateToolHeaders(
+    lastTools = listOfTools,
+    method = McpRpcMethod.of("tools/call"),
+    name = ToolName.of("calculator"),
+    arguments = mapOf("operation" to "add")
+)
+```
+
+`PopulateToolHeaders` reads `x-mcp-header` annotations from each tool's `inputSchema.properties` to determine which argument values should be promoted to `Mcp-Param-*` headers. Tools that don't use `x-mcp-header` annotations are unaffected.
+
+## OAuth-Authenticated MCP Clients
+
+`ClientFilters.DiscoveredMcpOAuth` discovers the authorization server from the MCP resource's `WWW-Authenticate` header (or `.well-known/oauth-protected-resource` fallback) and obtains tokens automatically. Three overloads:
+
+```kotlin
+// 1. Simple — client_credentials for both initial grant and refresh
+ClientFilters.DiscoveredMcpOAuth(
+    clientCredentials = Credentials("client-id", "secret"),
+    scopes = listOf("mcp:read"),
+    clock = Clock.systemUTC()
+).then(httpClient)
+
+// 2. Custom initial grant, client_credentials refresh
+ClientFilters.DiscoveredMcpOAuth(
+    clientCredentials = Credentials("client-id", "secret"),
+    oAuthFlowFilter = ClientFilters.OAuthJwtAssertion(jwtAssertion)
+).then(httpClient)
+
+// 3. Fully pluggable grant and refresh
+ClientFilters.DiscoveredMcpOAuth(
+    oAuthFlowFilter = myGrantFilter,
+    oAuthRefreshFilter = { refreshToken -> myRefreshFilter(refreshToken) }
+).then(httpClient)
+```
+
 ## Testing
 
 ```kotlin
@@ -143,3 +188,4 @@ val testClient = TestMcpClient()
 - Override timeouts per-call: `tools.list(overrideDefaultTimeout = 30.seconds)`
 - `onChange` callbacks fire on the transport thread — don't block
 - **`ResourceResponse`, `PromptResponse`, `CompletionResponse` are sealed interfaces**: Pattern-match on `Ok` and `Error` subtypes. Domain errors from the server are reconstructed as `*.Error` (not `McpError.Protocol`) when the server returns error code `-32050`.
+- **Tool list must be fetched before calling**: `HttpNonStreamingMcpClient` and `HttpStreamingMcpClient` cache the last-known tools list after `tools.list()`. Calling `tools.call()` before `tools.list()` means `PopulateToolHeaders` has no schema to read, so `Mcp-Param-*` headers won't be set.
