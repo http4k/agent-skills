@@ -170,16 +170,23 @@ val filter = ClientFilters.OAuthJwtAssertion(
 
 ## RefreshingOAuthToken (Machine-to-Machine)
 
-Three overloads for different levels of customisation:
+Four overloads for different levels of customisation:
 
 ```kotlin
-// 1. Simple — client_credentials for both initial grant and refresh
+// 1. Simple — OAuthProviderConfig (client_credentials for both initial grant and refresh)
 ClientFilters.RefreshingOAuthToken(
     config = OAuthProviderConfig(...),
     backend = httpClient
 )
 
-// 2. Custom initial grant, client_credentials refresh
+// 2. Simple — direct credentials (client_credentials for both initial grant and refresh)
+ClientFilters.RefreshingOAuthToken(
+    clientCredentials = Credentials("client-id", "client-secret"),
+    tokenUri = Uri.of("https://auth.example.com/token"),
+    backend = httpClient
+)
+
+// 3. Custom initial grant, client_credentials refresh
 ClientFilters.RefreshingOAuthToken(
     clientCredentials = Credentials("id", "secret"),
     tokenUri = Uri.of("https://auth.example.com/token"),
@@ -187,7 +194,7 @@ ClientFilters.RefreshingOAuthToken(
     oAuthFlowFilter = ClientFilters.OAuthJwtAssertion(jwtAssertion)  // custom initial grant
 )
 
-// 3. Fully pluggable — custom grant AND custom refresh
+// 4. Fully pluggable — custom grant AND custom refresh
 ClientFilters.RefreshingOAuthToken(
     tokenUri = Uri.of("https://auth.example.com/token"),
     backend = httpClient,

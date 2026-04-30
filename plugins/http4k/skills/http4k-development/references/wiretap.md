@@ -150,6 +150,8 @@ fun `test gets McpClient`(client: McpClient) {
 
 `Intercept.mcp` (wraps a full `PolyHandler`) replaces the old `Intercept.mcp` that previously accepted `ServerCapability` — that variant is now `Intercept.mcpCapabilities`.
 
+`Intercept.mcpCapabilities` automatically applies detail-level OTel span attributes for all MCP operation types (tool calls, completions, prompts, and resource reads). These attributes appear in the Wiretap trace view and in any connected OTel backend.
+
 ### RenderMode
 
 ```kotlin
