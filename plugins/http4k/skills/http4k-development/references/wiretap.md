@@ -79,45 +79,31 @@ val wiretap = Wiretap(
 
 `Intercept` is a JUnit 5 extension that wires up Wiretap for unit/integration tests. It records traffic and telemetry, and generates an HTML report on test failure.
 
-### Quick setup with an existing HttpHandler
+Use the companion object factory methods to construct `Intercept` — these are the public API:
+
+| Factory | Use case |
+|---------|----------|
+| `Intercept.http { HttpHandler }` | Wrap a plain HTTP app |
+| `Intercept.poly { PolyHandler }` | Wrap a full PolyHandler (HTTP + SSE/WS) |
+| `Intercept.mcp { PolyHandler }` | Wrap an MCP server |
+| `Intercept.mcpCapabilities { List<ServerCapability> }` | Wrap individual MCP capabilities |
+| `Intercept.a2a { A2A }` | Wrap an A2A agent server (requires `http4k-ai-a2a-sdk`) |
+| `Intercept()` / `Intercept(renderMode)` | No-arg: default HTTP passthrough |
+
+### HttpHandler app
 
 ```kotlin
 class MyTest {
-    private val app = routes("/" bind GET to { Response(OK).body("hello") })
-
     @RegisterExtension
     @JvmField
-    val intercept = Intercept(app)
-
-    @Test
-    fun `test passes the HttpHandler as a parameter`(http: HttpHandler) {
-        val response = http(Request(GET, "/"))
-        assertThat(response.status, equalTo(OK))
+    val intercept = Intercept.http {
+        // `this` is a Context — provides http(), otel(), clock(), random()
+        MyApp(http { Response(OK) }, otel("my-service"))
     }
-}
-```
-
-### Full setup with Context (recommended for production apps)
-
-```kotlin
-class MyTest {
-    @RegisterExtension
-    @JvmField
-    val intercept = Intercept(
-        livingDocsSections = defaultLivingDocSections,  // optional: customise markdown sections
-        traceReportTabs = defaultTraceReportTabs,       // optional: customise HTML report tabs
-        reportDir = File("build/reports/wiretap"),      // optional: override output directory
-        appFn = {
-            // `this` is a Context — provides http(), otel(), clock(), random()
-            val outbound: HttpHandler = { Response(OK) }
-            MyApp(http(outbound), otel("my-service"))
-        }
-    )
 
     @Test
     fun `spans are recorded`(http: HttpHandler) {
         http(Request(GET, "/"))
-        assertThat(intercept.traceStore.traces(Ascending).size, greaterThan(0))
     }
 }
 ```
@@ -125,11 +111,10 @@ class MyTest {
 ### Poly/MCP apps
 
 ```kotlin
-// Wrap a whole MCP server (PolyHandler) — preferred for complete MCP apps
+// Wrap a full MCP server (PolyHandler)
 @RegisterExtension
 @JvmField
 val intercept = Intercept.mcp {
-    // synonym for Intercept.poly — wraps a PolyHandler (HTTP + SSE/WebSocket/MCP)
     myMcpApp(http(), otel("my-service"))
 }
 
@@ -137,27 +122,42 @@ val intercept = Intercept.mcp {
 @RegisterExtension
 @JvmField
 val intercept = Intercept.mcpCapabilities {
-    // Returns capabilities that will be assembled into an MCP server for testing
     listOf(myToolCapability, myResourceCapability)
 }
 
 @Test
 fun `test gets McpClient`(client: McpClient) {
-    // McpClient resolves to an in-process client hitting /mcp
     val tools = client.tools().list()
 }
 ```
 
-`Intercept.mcp` (wraps a full `PolyHandler`) replaces the old `Intercept.mcp` that previously accepted `ServerCapability` — that variant is now `Intercept.mcpCapabilities`.
+`Intercept.mcpCapabilities` automatically applies detail-level OTel span attributes for all MCP operation types (tool calls, completions, prompts, and resource reads).
 
-`Intercept.mcpCapabilities` automatically applies detail-level OTel span attributes for all MCP operation types (tool calls, completions, prompts, and resource reads). These attributes appear in the Wiretap trace view and in any connected OTel backend.
+### A2A agents (requires `http4k-ai-a2a-sdk`)
+
+```kotlin
+@RegisterExtension
+val intercept = Intercept.a2a(baseUrl = Uri.of("http://localhost")) {
+    A2A(AgentCard("my-agent", Version.of("1.0.0"), "desc")) { req ->
+        Task(id = TaskId.of("t1"), contextId = ContextId.of("c1"),
+            status = TaskStatus(TASK_STATE_COMPLETED))
+    }
+}
+
+@Test
+fun `test gets A2AClient`(client: A2AClient) {
+    val card = client.agentCard().valueOrNull()!!
+}
+```
 
 ### RenderMode
 
 ```kotlin
-Intercept { http() }                    // OnFailure (default) — report only on test failure
-Intercept(RenderMode.Always) { http() } // Always generate report
-Intercept(RenderMode.Never) { http() }  // Never generate report
+Intercept.http(RenderMode.Always) { http() }   // Always generate report
+Intercept.http(RenderMode.OnFailure) { http() } // OnFailure (default)
+Intercept.http(RenderMode.Never) { http() }    // Never generate report
+Intercept()                                     // OnFailure, default HTTP handler
+Intercept(RenderMode.Always)                    // OnFailure, specified render mode
 ```
 
 Reports are written to `build/reports/http4k/wiretap/<package>/<TestName>.<method>`. Each test generates two files:
@@ -168,7 +168,7 @@ The HTML report path is also published as a JUnit report entry and printed to st
 
 ### Accessing recorded data in tests
 
-Pass `traceStore`, `logStore`, `transactionStore` as constructor parameters to share stores with the test:
+Pass `traceStore`, `logStore`, `transactionStore` as parameters to share stores with the test:
 
 ```kotlin
 class MyTest {
@@ -177,11 +177,10 @@ class MyTest {
 
     @RegisterExtension
     @JvmField
-    val intercept = Intercept(
+    val intercept = Intercept.http(
         traceStore = traceStore,
-        transactionStore = transactionStore,
-        appFn = { MyApp(http(), otel("my-service")) }
-    )
+        transactionStore = transactionStore
+    ) { MyApp(http(), otel("my-service")) }
 
     @Test
     fun `spans are recorded`(http: HttpHandler) {
@@ -200,6 +199,7 @@ When the target app exposes an MCP server, the Wiretap console includes an MCP i
 
 ## Gotchas
 
+- **`Intercept { HttpHandler }` no longer compiles**: The primary constructor's `appFn` now takes `Context.() -> PolyHandler`. Use `Intercept.http { myHttpApp }` instead. `Intercept()` and `Intercept(renderMode)` still work for the no-appFn constructors.
 - **Pro license required**: `http4k-pro-wiretap` requires an http4k Pro commercial license.
 - **Use `ctx.http()` for outbound clients**: Passing `JavaHttpClient()` directly bypasses outbound traffic recording. Always use `http()` from `Context`.
 - **Use `ctx.otel(name)` not `GlobalOpenTelemetry`**: `Intercept` resets `GlobalOpenTelemetry` before each test and injects a Wiretap-backed instance. Using `ctx.otel()` ensures spans are captured in `traceStore`.
