@@ -79,6 +79,26 @@ StrictnessMode.Lenient          // ignore unknown fields (default)
 StrictnessMode.FailOnUnknown    // reject unknown fields
 ```
 
+## Custom Adapters
+
+When writing a custom `JsonAdapter` that should self-register as a factory (no annotation processing), extend `TypedJsonAdapterFactory`:
+
+```kotlin
+object MyTypeAdapter : TypedJsonAdapterFactory<MyType>(MyType::class.java) {
+    override fun toJson(writer: JsonWriter, value: MyType?) { ... }
+    override fun fromJson(reader: JsonReader): MyType { ... }
+}
+
+// Register with standard .add() — no addTyped() needed
+val moshi = Moshi.Builder()
+    .add(MyTypeAdapter)
+    .asConfigurable()
+    .withStandardMappings()
+    .done()
+```
+
+`TypedJsonAdapterFactory<T>` implements both `JsonAdapter<T>` and `JsonAdapter.Factory`, so it routes only to instances of `T`.
+
 ## Gotchas
 
 - **MoshiNode, not JsonElement**: Moshi uses its own `MoshiNode` sealed interface for JSON nodes, not Moshi's internal types.

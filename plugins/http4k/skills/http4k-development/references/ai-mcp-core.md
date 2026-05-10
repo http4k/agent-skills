@@ -304,6 +304,16 @@ sealed interface InitializeResponse {
 val filter = InitializeFilter { next -> { req -> next(req) } }
 ```
 
+## TaskId
+
+`TaskId` is used in long-running tool operations and sampling. Generate random IDs with:
+
+```kotlin
+val id = TaskId.random()  // UUID-based, uses SecureRandom by default
+val id = TaskId.random(fixedRandom)  // deterministic for tests
+val id = TaskId.of("my-task-id")    // from an existing string
+```
+
 ## McpResult Helpers
 
 ```kotlin

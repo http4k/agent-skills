@@ -27,8 +27,8 @@ typealias MessageHandler = (MessageRequest) -> MessageResponse
 // Return a completed Task
 val handler: MessageHandler = { request ->
     Task(
-        id = TaskId.of("task-1"),
-        contextId = ContextId.of("ctx-1"),
+        id = TaskId.random(),        // generates a UUID-based TaskId
+        contextId = ContextId.random(),  // generates a UUID-based ContextId
         status = TaskStatus(state = TASK_STATE_COMPLETED),
         history = listOf(request.message)
     )
@@ -196,6 +196,7 @@ object MyA2AJson : ConfigurableA2AJson(
 
 - **`ResponseStream` is consumed once**: It wraps a `Sequence<StreamItem>`, which can only be iterated once. Don't call `toList()` and then iterate again.
 - **`A2ARole.ROLE_USER` vs `A2ARole.ROLE_AGENT`**: Messages from the user have `ROLE_USER`; agent replies use `ROLE_AGENT`. Mixing these up can cause clients to misinterpret conversation history.
-- **`MessageId` must be globally unique**: Use `UUID.randomUUID().toString()` — duplicate IDs cause deduplication issues in clients.
-- **`ContextId` groups tasks**: Multiple tasks with the same `contextId` belong to the same conversation/context. Use consistent `ContextId` values to maintain session continuity.
-- **Value types require `A2AJson`**: Don't use a plain Moshi or Jackson instance for A2A types — value types like `TaskId`, `Version` won't serialize/deserialize correctly without `withA2AMappings()`.
+- **`MessageId` must be globally unique**: Use `MessageId.random()` (or `UUID.randomUUID().toString()`) — duplicate IDs cause deduplication issues in clients.
+- **`ContextId` groups tasks**: Multiple tasks with the same `contextId` belong to the same conversation/context. Use `ContextId.random()` for new contexts; reuse the same value across tasks in one conversation.
+- **Value types require `A2AJson`**: Don't use a plain Moshi or Jackson instance for A2A types — value types like `TaskId`, `Version`, `ProtocolVersion` won't serialize/deserialize correctly without `withA2AMappings()`.
+- **`TaskId.random()` and `ContextId.random()` use `SecureRandom` by default**: Pass a custom `Random` for deterministic test IDs.

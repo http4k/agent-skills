@@ -13,6 +13,8 @@ Two protocol bindings are available. Both return a `PolyHandler` (HTTP + SSE):
 
 ### JSON-RPC binding
 
+`messageHandler` is the **last parameter** in all `a2aJsonRpc` overloads — it can be passed as a trailing lambda:
+
 ```kotlin
 // Simplest form — single endpoint, all operations via POST
 val server: PolyHandler = a2aJsonRpc(
@@ -20,28 +22,30 @@ val server: PolyHandler = a2aJsonRpc(
         name = "my-agent",
         version = Version.of("1.0.0"),
         description = "Processes requests"
-    ),
-    messageHandler = { request ->
-        Task(
-            id = TaskId.of(UUID.randomUUID().toString()),
-            contextId = ContextId.of("ctx-1"),
-            status = TaskStatus(state = TASK_STATE_COMPLETED),
-            history = listOf(request.message)
-        )
-    }
-)
+    )
+) { request ->
+    Task(
+        id = TaskId.random(),
+        contextId = ContextId.random(),
+        status = TaskStatus(state = TASK_STATE_COMPLETED),
+        history = listOf(request.message)
+    )
+}
 
 server.asServer(Jetty(9000)).start()
 ```
 
 ### REST binding
 
+`messageHandler` is the **last parameter** in all `a2aRest` overloads — use as a trailing lambda:
+
 ```kotlin
 val server: PolyHandler = a2aRest(
     agentCard = agentCard,
-    messageHandler = myHandler,
     basePath = "/v1"   // optional prefix for all routes
-)
+) { request ->
+    myHandler(request)
+}
 ```
 
 ### With explicit A2A facade
@@ -204,6 +208,7 @@ fun `test receives A2AClient`(client: A2AClient) {
 
 ## Gotchas
 
+- **`messageHandler` is the last parameter**: In `a2aJsonRpc` and `a2aRest`, the `messageHandler` parameter is always last so it can be passed as a trailing lambda. Named-parameter call sites need updating if they previously passed it positionally in a different position.
 - **`PolyHandler` not `HttpHandler`**: Both `a2aJsonRpc` and `a2aRest` return `PolyHandler`. Call `PolyHandler.asServer(PolyServerConfig)` — not `HttpHandler.asServer(ServerConfig)`.
 - **SSE requires `PolyHandler`**: The SSE subscription endpoint (`tasks().subscribe()`) only works when the server is a `PolyHandler`. If you extract just the `http` part, SSE will return 404.
 - **`TaskSubscriptions.NoOp()` is the default**: If you don't pass subscriptions, `NoOp()` is used by the convenience factory methods — SSE task subscriptions silently do nothing. Pass `TaskSubscriptions.InMemory()` explicitly if you need SSE push for task updates.

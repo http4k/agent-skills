@@ -50,6 +50,15 @@ val tempProvider: CredentialsProvider = {
 val s3 = S3Bucket.Http(bucketName, region, tempProvider)
 ```
 
+## Get Caller Identity
+
+```kotlin
+val identity = sts.getCallerIdentity().successValue()
+// identity.UserId   — "ARO123EXAMPLE123:my-role-session-name"
+// identity.Account  — AwsAccount
+// identity.Arn      — ARN of the assumed role/user
+```
+
 ## Web Identity Federation
 
 ```kotlin
