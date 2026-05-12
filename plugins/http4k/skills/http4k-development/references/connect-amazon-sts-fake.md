@@ -19,6 +19,7 @@ val client = fakeSts.client()
 ```kotlin
 val fakeSts = FakeSTS(
     clock = Clock.systemUTC(),
+    random = Random(42),              // seed for deterministic session tokens
     defaultSessionValidity = Duration.ofHours(1)
 )
 ```

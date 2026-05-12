@@ -61,4 +61,5 @@ data class AwsCredentials(
 
 - **Signature V4**: The `AwsAuth` filter computes HMAC-SHA256 signatures per AWS Signature V4 spec, adding `Authorization`, `x-amz-date`, and `x-amz-content-sha256` headers.
 - **Session token**: When present, the `x-amz-security-token` header is added automatically.
+- **S3 vs other services — canonical path encoding**: S3 single-encodes path components in the canonical request; every other AWS service double-encodes. `AwsAuth` and `AwsRequestPreSigner` apply the correct encoding automatically based on the `service` field in `AwsCredentialScope` — no manual adjustment needed.
 - **SDK adapter**: `AwsSdkClient` bridges AWS SDK v2's `SdkHttpClient` to http4k, enabling testability — swap in a fake `HttpHandler` for testing.
