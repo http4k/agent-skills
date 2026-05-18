@@ -30,3 +30,4 @@ Default stop mode is `Immediate`. Default port is `8000`.
 - **HTTP only**: Implements `ServerConfig`, not `PolyServerConfig`. No WebSocket or SSE support. For WebSocket via Netty, use `http4k-server-netty` instead.
 - **Null request handling**: Same as KtorCIO — if the Ktor request cannot be converted, returns `501 Not Implemented`.
 - **Port discovery**: `port()` reads from the Ktor engine config connectors, not the actual bound socket.
+- **Blocking handlers run on `Dispatchers.IO`**: The handler invocation is wrapped in `withContext(Dispatchers.IO)`, so standard blocking http4k handlers work correctly without coroutine dispatcher issues.

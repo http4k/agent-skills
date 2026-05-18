@@ -22,16 +22,21 @@ wiretap.asServer(Jetty(21000)).start()
 
 ## Wrapping a Local App
 
+Use the `LocalTarget` companion factory methods:
+
 ```kotlin
-// LocalTarget wraps your HttpHandler directly — no real server needed
-val wiretap = Wiretap(
-    LocalTarget { myApp() }
-)
+// Wrap an HttpHandler
+val wiretap = Wiretap(LocalTarget.http { myApp() })
+
+// Wrap a PolyHandler (HTTP + SSE/WS)
+val wiretap = Wiretap(LocalTarget.poly { poly(myApp()) })
+
 wiretap.asServer(Jetty(21000)).start()
 ```
 
 `LocalTarget` vs `RemoteTarget`:
-- `LocalTarget` — wraps an in-process `HttpHandler`; no network hop
+- `LocalTarget.http { ... }` — wraps an in-process `HttpHandler`; no network hop
+- `LocalTarget.poly { ... }` — wraps a `PolyHandler`; auto-converts via `.toHttpHandler()`
 - `RemoteTarget` — proxies to a real server URI; auto-starts the server
 
 ## Context in LocalTarget / RemoteTarget
