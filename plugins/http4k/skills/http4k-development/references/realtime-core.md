@@ -244,6 +244,27 @@ poly.ws(Request(GET, "/ws"))              // test WS (returns TestWsClient)
 poly.sse(Request(GET, "/events"))         // test SSE (returns TestSseClient)
 ```
 
+### toHttpHandler() — SSE as Plain HTTP
+
+Convert a `PolyHandler` into an `HttpHandler` so SSE endpoints can be tested with a standard HTTP client or recording infrastructure:
+
+```kotlin
+val httpHandler = polyHandler.toHttpHandler()
+
+// SSE requests (Accept: text/event-stream) are forwarded to the SSE handler
+// and streamed back as a byte stream via piped I/O — persistent streams work
+val response = httpHandler(Request(GET, "/events").header("Accept", "text/event-stream"))
+
+// Terminating SSE stream — read all events from bodyString()
+assertThat(response.bodyString(), equalTo("event: first\ndata: a\n\nevent: second\ndata: b\n\n"))
+
+// Persistent SSE stream — read events incrementally without deadlock
+val reader = response.body.stream.bufferedReader(Charsets.UTF_8)
+val firstEvent = reader.readLine()  // blocks only until first event arrives
+```
+
+Non-SSE requests are forwarded to the HTTP handler unchanged.
+
 ### useClient Helper
 
 ```kotlin
@@ -281,3 +302,4 @@ Setting `X-Accel-Buffering: no` is required when an Nginx reverse proxy sits in 
 - **WsStatus equality uses code only**: Two `WsStatus` values with the same code but different descriptions are equal.
 - **WsResponse subprotocol**: Set via `WsResponse("protocol") { ws -> ... }` or `ServerFilters.SetWsSubProtocol("protocol")`.
 - **PolyFilters apply across all protocols**: `PolyFilters` apply concerns across all protocol handlers in a `PolyHandler`. They compose with `.then()`.
+- **`toHttpHandler()` streams SSE via piped I/O**: Persistent SSE streams (that don't close immediately) are forwarded incrementally via background thread + `PipedInputStream`. Reading from `body.stream` returns events as they arrive without deadlock. Reading `bodyString()` blocks until the SSE handler closes the connection.
