@@ -24,6 +24,25 @@ val fakeSts = FakeSTS(
 )
 ```
 
+## Inspecting Assumed Roles
+
+`FakeSTS` accepts an optional `assumedRoles: Storage<AssumedRole>` for asserting which roles were assumed in tests:
+
+```kotlin
+val assumedRoles = Storage.InMemory<AssumedRole>()
+val fakeSts = FakeSTS(assumedRoles = assumedRoles)
+val sts = fakeSts.client()
+
+val creds = sts.assumeRole(
+    ARN.of("arn:aws:iam::123456789012:role/TestRole"),
+    "test-session"
+).successValue().Credentials
+
+// Inspect stored assumed roles
+val stored = assumedRoles.keySet().map { assumedRoles[it] }
+assertThat(stored.first()!!.sessionName, equalTo("test-session"))
+```
+
 ## Test Pattern
 
 ```kotlin
@@ -37,10 +56,10 @@ val result = sts.assumeRole(
 val creds = result.Credentials
 // Use creds to create other fake clients with assumed credentials
 
-// Get caller identity (returns fixed fake values)
-val identity = sts.getCallerIdentity().successValue()
-// identity.Account.value == "123456789012"
-// identity.UserId       == "ARO123EXAMPLE123:my-role-session-name"
+// Get caller identity — requires using credentials from a prior assumeRole call
+// GetCallerIdentity returns 401 if the credentials are not from an assumed role
+val credentialedClient = STS.Http(creds, region, credentialedHttpClient)
+val identity = credentialedClient.getCallerIdentity().successValue()
 ```
 
 ## Chaos Testing
@@ -56,3 +75,4 @@ fakeSts.behave()
 - Returns deterministic fake credentials (not real AWS credentials)
 - Expiry set based on `defaultSessionValidity` from the clock
 - Does **not** validate role ARNs or permissions
+- **`getCallerIdentity` requires assumed-role credentials**: It returns `401 UNAUTHORIZED` for callers that did not obtain credentials via `assumeRole` or `assumeRoleWithWebIdentity` on this same fake instance

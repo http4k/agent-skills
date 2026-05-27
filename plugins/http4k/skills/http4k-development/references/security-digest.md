@@ -9,11 +9,14 @@ HTTP Digest Authentication (RFC 2617) with server and client filters. Supports M
 
 ## Server Filter
 
+`nonceGenerator` and `nonceVerifier` are **required** parameters — there are no defaults.
+
 ```kotlin
 val app = ServerFilters.DigestAuth(
     realm = "my-app",
     passwordLookup = { username -> passwords[username] },  // returns password String? — null rejects
-    qop = listOf(Qop.Auth)
+    nonceGenerator = Nonce.SECURE_NONCE,
+    nonceVerifier = { nonce -> isValidNonce(nonce) }
 ).then { Response(OK).body("authenticated") }
 ```
 
@@ -25,7 +28,7 @@ val app = ServerFilters.DigestAuth(
     passwordLookup = { username -> findPasswordForUser(username) },
     qop = listOf(Qop.Auth),
     digestMode = DigestMode.Standard,           // or DigestMode.Proxy
-    nonceGenerator = Nonce.SECURE_NONCE,         // generates random nonces
+    nonceGenerator = Nonce.SECURE_NONCE,
     nonceVerifier = { nonce -> isValidNonce(nonce) },  // validate nonce freshness
     algorithm = "MD5",
     usernameKey = RequestKey.required("user")    // inject username into request context
@@ -67,9 +70,13 @@ val client = ClientFilters.DigestAuth(
 ## End-to-End Example
 
 ```kotlin
-// Server
-val server = ServerFilters.DigestAuth("my-realm", { if (it == "admin") "password" else null })
-    .then { Response(OK).body("secret content") }
+// Server — nonceGenerator and nonceVerifier are required
+val server = ServerFilters.DigestAuth(
+    realm = "my-realm",
+    passwordLookup = { if (it == "admin") "password" else null },
+    nonceGenerator = Nonce.SECURE_NONCE,
+    nonceVerifier = { true }
+).then { Response(OK).body("secret content") }
 
 // Client authenticates automatically
 val response = ClientFilters.DigestAuth(Credentials("admin", "password"))
@@ -101,6 +108,7 @@ Qop.AuthInt   // authentication + integrity checking
 
 ## Gotchas
 
+- **`nonceGenerator` and `nonceVerifier` are required**: There are no defaults — both must be explicitly provided when calling `ServerFilters.DigestAuth`. This prevents accidentally shipping with trivial or insecure nonce verification.
 - **Password lookup returns plain password**: The server needs the raw password to compute the digest. It does not receive or store hashed passwords.
 - **Client handles challenge automatically**: `ClientFilters.DigestAuth` intercepts `401` responses, extracts the challenge, computes the digest, and retries the request.
 - **Nonce count tracking**: The client tracks nonce reuse and increments `nc` (nonce count) for the same server nonce. A new server nonce resets the count.

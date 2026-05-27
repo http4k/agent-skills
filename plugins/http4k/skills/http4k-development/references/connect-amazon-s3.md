@@ -65,6 +65,24 @@ S3Bucket.Http(
 )
 ```
 
+## Streaming Uploads
+
+`PutObject` accepts an optional `length: Long?` parameter for content-length-aware streaming:
+
+```kotlin
+// Stream with known content length (enables streaming without buffering)
+PutObject(
+    key = BucketKey.of("large-file.bin"),
+    content = inputStream,
+    length = 50_000_000L   // optional — enables streaming mode
+)
+
+// Via bucket client
+bucket.putObject(BucketKey.of("data.bin"), inputStream, length = fileSize).successValue()
+```
+
+Providing `length` sets the `content-length` header and enables true streaming (no in-memory buffering).
+
 ## Gotchas
 
 - Use `S3Bucket` (not `S3`) for most object operations — it pre-configures the bucket/region

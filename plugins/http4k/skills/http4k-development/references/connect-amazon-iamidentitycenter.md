@@ -62,6 +62,18 @@ val token = oidc.createToken(
 ).successValue().AccessToken
 ```
 
+## Grant Types
+
+```kotlin
+GrantType.DeviceCode          // "urn:ietf:params:oauth:grant-type:device_code"
+GrantType.AuthorizationCode   // "authorization_code"
+GrantType.AuthorizationCode2  // "AuthorizationCode" — alternative wire value used by some SSO implementations
+GrantType.RefreshToken        // "refresh_token"
+GrantType.RefreshToken2       // "RefreshToken" — alternative wire value used by some SSO implementations
+```
+
+Use `GrantType.fromWire(wireValue)` to parse a grant type from a wire string — matches both the standard and alternative wire values.
+
 ## Gotchas
 
 - SSO and OIDC are two separate clients in the same module
@@ -69,3 +81,4 @@ val token = oidc.createToken(
 - OIDC device flow: poll `createToken` until user approves (handle `AuthorizationPendingException`)
 - Access tokens expire — re-run device flow to get new token
 - SSO credentials have short TTL — cache and refresh before expiry
+- Some AWS SSO implementations send `"AuthorizationCode"` or `"RefreshToken"` as grant type wire values (PascalCase) instead of the OAuth standard lowercase forms — use `AuthorizationCode2` / `RefreshToken2` variants when needed

@@ -75,8 +75,26 @@ val wsClient: WsClient = ws.blocking(
 | `SocketTimeoutException` | `CLIENT_TIMEOUT` |
 | `SocketException` / `IOException` | `SERVICE_UNAVAILABLE` |
 
+## Streaming Request Bodies
+
+Use `BodyMode.Stream` to stream request bodies without buffering into memory:
+
+```kotlin
+val client = OkHttp(bodyMode = BodyMode.Stream)
+
+// Stream a large file upload — body is written directly to OkHttp's sink
+val response = client(
+    Request(POST, "http://host/upload")
+        .header("content-length", fileSize.toString())
+        .body(fileInputStream)
+)
+```
+
+In `BodyMode.Memory` (default), the request body is fully buffered into a byte array before sending.
+
 ## Gotchas
 
 - **Redirects disabled by default**: The default `OkHttpClient` is configured with `followRedirects(false)`.
 - **WebSocket is a separate class**: `OkHttpWebsocketClient` is independent from `OkHttp` — construct it separately with its own `OkHttpClient`.
+- **Stream mode for large uploads**: Use `BodyMode.Stream` for large request payloads to avoid OOM. The content-length header is used as the `RequestBody.contentLength()` hint; omitting it sends with `contentLength() = -1` (chunked).
 - **Popular choice**: OkHttp is the most widely-used http4k client backend due to OkHttp's maturity and broad feature set.

@@ -75,8 +75,9 @@ Status.CREATED                // 201
 Status.NOT_FOUND              // 404
 Status.INTERNAL_SERVER_ERROR  // 500
 
-// Custom description
-Status(200, "Everything is fine")
+// Custom description — CR and LF characters are rejected
+Status(200, "Everything is fine")  // OK
+// Status(200, "Bad\r\nDescription") // throws IllegalArgumentException
 
 // Range checks
 status.successful             // 200-299
@@ -85,6 +86,10 @@ status.serverError            // 500-599
 status.informational          // 100-199
 status.redirection            // 300-399
 ```
+
+### Gotchas
+
+- **Status description rejects CR/LF**: Constructing a `Status` with `\r` or `\n` in the description throws `IllegalArgumentException`. This prevents HTTP response splitting attacks when building `Status` from user-supplied data.
 
 ## Uri
 
@@ -435,10 +440,43 @@ val server = app.asServer(SunHttpLoom(8080)).start()
 ## Client
 
 ```kotlin
-// Built-in Java HTTP client (no extra dependencies)
-val client: HttpHandler = JavaHttpClient()
+// Built-in URL connection client (no extra dependencies)
+val client: HttpHandler = URLConnectionHttpClient()
 val response = client(Request(GET, "http://example.com"))
+
+// With timeouts
+val client = URLConnectionHttpClient(
+    readTimeout = Duration.ofSeconds(30),
+    connectionTimeout = Duration.ofSeconds(10)
+)
 ```
+
+`Java8HttpClient` is a deprecated alias for `URLConnectionHttpClient`.
+
+## Cookie Storage
+
+`ClientFilters.Cookies` manages cookies across requests using a `CookieStorage` implementation:
+
+```kotlin
+// DefaultCookieStorage — RFC 6265 compliant (recommended)
+// Scopes cookies by domain, path, and scheme — cookies sent only to matching origins
+val client = ClientFilters.Cookies(storage = DefaultCookieStorage())
+    .then(httpClient)
+
+// InsecureCookieStorage — global jar, no origin scoping
+// Use only for single-origin test scenarios
+val client = ClientFilters.Cookies(storage = InsecureCookieStorage())
+    .then(httpClient)
+```
+
+`ClientFilters.Cookies` defaults to `DefaultCookieStorage()`.
+
+### Cookie Storage Gotchas
+
+- **`BasicCookieStorage` is deprecated**: It has been renamed to `InsecureCookieStorage`. Replace usages to suppress deprecation warnings. Use `DefaultCookieStorage` for production — it prevents cross-origin cookie leakage.
+- **`LocalCookie` requires `origin`**: `LocalCookie(cookie, created, origin)` — the `origin: Uri` field is required when constructing `LocalCookie` instances directly.
+- **`CookieStorage.retrieve(uri)` takes a URI**: The `retrieve` method now takes the request `Uri` to enable origin-scoped filtering.
+- **`DefaultCookieStorage` domain matching**: Cookies without a `Domain` attribute are host-only (exact host match). Cookies with `Domain` match that domain and all subdomains.
 
 ## Request Context
 
