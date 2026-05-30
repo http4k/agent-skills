@@ -43,7 +43,7 @@ client.use { mcp ->
 // AutoCloseable — client.stop() called on exit
 ```
 
-`start()` returns `McpResult<McpInitialize.Response.Result>` — the inner type changed from `McpInitialize.Response` to `McpInitialize.Response.Result`.
+`start()` returns `McpResult<McpInitialize.Response.Result>`.
 
 ## Tools
 

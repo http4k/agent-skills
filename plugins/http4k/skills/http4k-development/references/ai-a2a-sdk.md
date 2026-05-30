@@ -208,7 +208,7 @@ fun `test receives A2AClient`(client: A2AClient) {
 
 ## Gotchas
 
-- **`messageHandler` is the last parameter**: In `a2aJsonRpc` and `a2aRest`, the `messageHandler` parameter is always last so it can be passed as a trailing lambda. Named-parameter call sites need updating if they previously passed it positionally in a different position.
+- **`messageHandler` is the last parameter**: In `a2aJsonRpc` and `a2aRest`, the `messageHandler` parameter is always last so it can be passed as a trailing lambda.
 - **`PolyHandler` not `HttpHandler`**: Both `a2aJsonRpc` and `a2aRest` return `PolyHandler`. Call `PolyHandler.asServer(PolyServerConfig)` — not `HttpHandler.asServer(ServerConfig)`.
 - **SSE requires `PolyHandler`**: The SSE subscription endpoint (`tasks().subscribe()`) only works when the server is a `PolyHandler`. If you extract just the `http` part, SSE will return 404.
 - **`TaskSubscriptions.NoOp()` is the default**: If you don't pass subscriptions, `NoOp()` is used by the convenience factory methods — SSE task subscriptions silently do nothing. Pass `TaskSubscriptions.InMemory()` explicitly if you need SSE push for task updates.

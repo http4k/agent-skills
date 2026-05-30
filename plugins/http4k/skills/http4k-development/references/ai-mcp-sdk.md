@@ -266,9 +266,9 @@ RenderMcpApp(
 
 ## Gotchas
 
-- **`ServerTools`/`ServerResources`/`ServerPrompts`/`ServerInitializer` replaced**: Use `tools()`, `resources()`, `prompts()`, `initializer()` factory functions instead. The old class names no longer exist.
-- **`compose()` removed**: Use `capabilities()` or the `+` operator to combine `ServerCapability` instances.
-- **`McpProtocol` constructor changed**: `ServerMetaData` is no longer the first parameter. Pass `initializer(SimpleInitializeHandler(metadata))` as the second argument after `sessions`. The old constructor style `McpProtocol(metadata, sessions, ...)` no longer compiles.
+- **Use `tools()`, `resources()`, `prompts()`, `initializer()` factory functions** to create server capabilities.
+- **Use `capabilities()` or the `+` operator** to combine `ServerCapability` instances.
+- **`McpProtocol` constructor**: Pass `initializer(SimpleInitializeHandler(metadata))` as the second argument after `sessions`.
 - **Use `mcp()` not `mcpHttpStreaming()`**: `mcpHttpStreaming()` is deprecated — use `mcp()` as a direct replacement.
 - `HttpStreamingMcp` is recommended for most use cases (supports progress, notifications)
 - `StdIoMcpSessions` is for subprocess-based MCP servers (e.g., CLI tools)

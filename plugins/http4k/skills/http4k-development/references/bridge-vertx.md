@@ -33,5 +33,5 @@ router.route("/*").handler(VertxToHttp4kHandler(myApp))
 ## Gotchas
 
 - **Streaming body**: The adapter wires Vert.x `dataHandler`/`endHandler`/`exceptionHandler` to a `QueueInputStream`. The handler receives the body as it arrives — it does not wait for the full body before being invoked. Handlers that call `bodyString()` will block until the stream ends, which is correct behaviour.
-- **`executeBlocking`, not `blockingHandler`**: `fallbackToHttp4k` now uses a standard `handler()` entry point with `executeBlocking()` internally, not `blockingHandler()`. The distinction matters for Vert.x ordering guarantees — results are delivered in order by default.
+- **`executeBlocking`, not `blockingHandler`**: `fallbackToHttp4k` uses a standard `handler()` entry point with `executeBlocking()` internally, not `blockingHandler()`. The distinction matters for Vert.x ordering guarantees — results are delivered in order by default.
 - **Chunked response**: Response bodies are written in chunks; the full body is never held in memory at once. Very large responses are safe.

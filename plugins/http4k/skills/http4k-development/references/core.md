@@ -490,9 +490,9 @@ val client = ClientFilters.Cookies(storage = InsecureCookieStorage())
 ### Cookie Storage Gotchas
 
 - **`FollowRedirects` strips credentials on cross-origin redirects**: By default, `Authorization`, `Cookie`, and `Proxy-Authorization` are removed from the forwarded request when the redirect target is a different origin (different scheme, host, or port). Pass a custom `sensitiveHeaders` set to change which headers are stripped.
-- **`BasicCookieStorage` is deprecated**: It has been renamed to `InsecureCookieStorage`. Replace usages to suppress deprecation warnings. Use `DefaultCookieStorage` for production — it prevents cross-origin cookie leakage.
+- **`BasicCookieStorage` is deprecated**: Use `InsecureCookieStorage` instead, and prefer `DefaultCookieStorage` for production — it prevents cross-origin cookie leakage.
 - **`LocalCookie` requires `origin`**: `LocalCookie(cookie, created, origin)` — the `origin: Uri` field is required when constructing `LocalCookie` instances directly.
-- **`CookieStorage.retrieve(uri)` takes a URI**: The `retrieve` method now takes the request `Uri` to enable origin-scoped filtering.
+- **`CookieStorage.retrieve(uri)` takes a URI**: The `retrieve` method takes the request `Uri` to enable origin-scoped filtering.
 - **`DefaultCookieStorage` domain matching**: Cookies without a `Domain` attribute are host-only (exact host match). Cookies with `Domain` match that domain and all subdomains.
 
 ## Request Context

@@ -291,7 +291,7 @@ val clientApp = routes(
 
 ## FakeOAuthServer (Testing)
 
-`FakeOAuthServer` is a full in-memory OAuth server for testing clients. It now serves the `/.well-known/oauth-authorization-server` discovery endpoint automatically, making it compatible with `AuthServerDiscovery.fromKnownAuthServer(...)`:
+`FakeOAuthServer` is a full in-memory OAuth server for testing clients. It serves the `/.well-known/oauth-authorization-server` discovery endpoint automatically, making it compatible with `AuthServerDiscovery.fromKnownAuthServer(...)`:
 
 ```kotlin
 val fakeServer = FakeOAuthServer(
@@ -307,9 +307,9 @@ val discovery = AuthServerDiscovery.fromKnownAuthServer(Uri.of("http://fake-serv
 
 `AuthServerDiscovery` failure messages include the target URI and HTTP status for easier debugging.
 
-`AuthServerDiscovery.fromKnownAuthServer()` now validates that the `issuer` field in the discovery document matches the origin of the server URI (RFC 8414 §3.3). A mismatch returns `Failure` with an exception describing the discrepancy.
+`AuthServerDiscovery.fromKnownAuthServer()` validates that the `issuer` field in the discovery document matches the origin of the server URI (RFC 8414 §3.3). A mismatch returns `Failure` with an exception describing the discrepancy.
 
-`AuthServerDiscovery.fromProtectedResource()` now accepts an optional `expectedResource: Uri = resourceUri` parameter and validates that the `resource` field in the resource metadata matches the expected resource (RFC 9728 §3.3). Pass `expectedResource` explicitly when the protected resource URI and the registered resource URI differ.
+`AuthServerDiscovery.fromProtectedResource()` accepts an optional `expectedResource: Uri = resourceUri` parameter and validates that the `resource` field in the resource metadata matches the expected resource (RFC 9728 §3.3). Pass `expectedResource` explicitly when the protected resource URI and the registered resource URI differ.
 
 ## Gotchas
 

@@ -110,7 +110,7 @@ mcp.useClient {
 
 ## Gotchas
 
-- **Use `mcp()` not `mcpHttpStreaming()`**: `mcpHttpStreaming()` is deprecated — use `mcp()` as a direct replacement.
+- **Use `mcp()`**: `mcpHttpStreaming()` is deprecated — use `mcp()` instead.
 - `testMcpClient()` only supports HTTP Streaming transport; for non-streaming, use `HttpNonStreamingMcpClient` directly
 - All results are wrapped in `McpResult` (Result4k) — use `Success`/`Failure` pattern matching
 - `expectNotification()` must be called explicitly to process pending server notifications in tests

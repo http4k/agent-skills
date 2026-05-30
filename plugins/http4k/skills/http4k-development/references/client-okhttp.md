@@ -97,4 +97,3 @@ In `BodyMode.Memory` (default), the request body is fully buffered into a byte a
 - **Redirects disabled by default**: The default `OkHttpClient` is configured with `followRedirects(false)`.
 - **WebSocket is a separate class**: `OkHttpWebsocketClient` is independent from `OkHttp` — construct it separately with its own `OkHttpClient`.
 - **Stream mode for large uploads**: Use `BodyMode.Stream` for large request payloads to avoid OOM. The content-length header is used as the `RequestBody.contentLength()` hint; omitting it sends with `contentLength() = -1` (chunked).
-- **Popular choice**: OkHttp is the most widely-used http4k client backend due to OkHttp's maturity and broad feature set.
