@@ -158,6 +158,31 @@ val app = security.filter.then { req ->
 }
 ```
 
+## Cryptographic Utilities
+
+### Sha256
+
+```kotlin
+// SHA-256 hash
+Sha256.hash("input-string")       // ByteArray
+Sha256.hash(byteArrayOf(...))     // ByteArray
+
+// HMAC-SHA-256
+Sha256.hmac(key = "secret", data = "payload")  // ByteArray
+```
+
+`HmacSha256` is deprecated; use `Sha256` instead.
+
+### Timing-safe Comparison
+
+```kotlin
+// Constant-time string equality — prevents timing-based secret-guessing attacks
+secureEquals("expected-token", "incoming-token")   // Boolean
+secureEquals(null, "value")                        // false — null always fails
+```
+
+Use `secureEquals` wherever a secret (token, password, HMAC) is compared against user input. Built-in filters (`BasicAuth`, `BearerAuth`, OAuth callback) use it automatically; custom validators should too.
+
 ## Gotchas
 
 - **Security is just a Filter**: All security types wrap a `Filter` that returns `401 UNAUTHORIZED` on failure.

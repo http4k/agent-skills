@@ -23,12 +23,13 @@ router.fallbackToHttp4k(myApp)
 ## How It Works
 
 - Wraps the http4k handler as a Ratpack `Handler`
-- Waits for the request body via `context.request.body.then()`
-- Converts between Ratpack's `Context`/`TypedData` and http4k types
+- Streams the request body via a `Subscriber<ByteBuf>` backed by `QueueInputStream` — backpressure flows through the reactive chain so the handler can read the body as it arrives without buffering the entire payload
+- The blocking http4k handler runs via `ratpack.exec.Blocking.get()` so it does not block Ratpack's event loop
+- Responses are streamed back using `Streams.flatYield` and chunked writes
 
 ## Gotchas
 
-- **Async body**: Ratpack request bodies are async — the adapter uses `.then()` to wait for the body before invoking the http4k handler.
+- **Streaming, not buffering**: The adapter subscribes to the Ratpack reactive body stream. The http4k `Request` body is a `QueueInputStream`; reading it before the stream completes blocks until data arrives. Handlers that need the full body before responding will work correctly, but those that buffer the body via `bodyString()` will block until the upstream Ratpack stream closes.
 - **Method validation**: Unsupported HTTP methods return `501 NOT_IMPLEMENTED`.
 - **RequestSource**: Extracts `remoteAddress.host` and `remoteAddress.port` from the Ratpack request.
-- **Byte array response**: Response bodies are sent as byte arrays via `context.response.send()`.
+- **Chunked response**: Response bodies are streamed back in chunks via `Streams.flatYield`; the response is not held in memory before being sent.

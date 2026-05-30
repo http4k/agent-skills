@@ -91,6 +91,12 @@ status.redirection            // 300-399
 
 - **Status description rejects CR/LF**: Constructing a `Status` with `\r` or `\n` in the description throws `IllegalArgumentException`. This prevents HTTP response splitting attacks when building `Status` from user-supplied data.
 
+## Security Notes
+
+- **Decompression bomb protection**: Gzip decompression is limited to 10 MB. Bodies larger than this throw `SizeLimitExceededException`. `RequestFilters.GunZip` catches this and returns `413 REQUEST_ENTITY_TOO_LARGE` automatically.
+- **Timing-safe auth comparison**: `ServerFilters.BasicAuth` and `ServerFilters.BearerAuth` use constant-time comparison for credentials to prevent timing-based attacks. Custom validator lambdas receive the value to compare and can use `secureEquals()` from `http4k-core` for the same protection.
+- **Header sanitization**: `Request.header()`, `Response.header()`, `replaceHeader()`, and `headers()` sanitize header names and values before storing them.
+
 ## Uri
 
 ```kotlin
@@ -146,18 +152,19 @@ Filter.NoOp.then(myFilter).then(handler)
 ### Built-in Server Filters
 
 ```kotlin
-// CORS
+// CORS — wildcard origin (*) with credentials is rejected at the policy level;
+// use an explicit origin allowlist when credentials = true
 ServerFilters.Cors(CorsPolicy(
     originPolicy = OriginPolicy.AllowAll(),
     headers = listOf("content-type"),
     methods = listOf(GET, POST),
-    credentials = true
+    credentials = true   // requires an explicit origin policy, not AllowAll
 ))
 
-// Basic Auth
+// Basic Auth — credential comparison uses timing-safe (constant-time) equality
 ServerFilters.BasicAuth("realm") { credentials -> credentials.user == "admin" }
 
-// Bearer Auth
+// Bearer Auth — token comparison uses timing-safe (constant-time) equality
 ServerFilters.BearerAuth("realm") { token -> token == "valid-token" }
 
 // Request Context initialization (required for RequestKey lenses)
@@ -166,7 +173,10 @@ ServerFilters.InitialiseRequestContext(contexts)
 // Catch all exceptions
 ServerFilters.CatchAll { Response(INTERNAL_SERVER_ERROR) }
 
-// GZip
+// GZip — compresses responses, decompresses request bodies
+// Decompression is capped at 10 MB. Exceeding the limit causes GunZip filter
+// to return 413 REQUEST_ENTITY_TOO_LARGE and the server GZip filter to throw
+// SizeLimitExceededException.
 ServerFilters.GZip()
 ```
 
@@ -181,7 +191,12 @@ ClientFilters.SetHostFrom(Uri.of("http://backend:8080"))
 
 // Follow redirects (handles both absolute and relative Location headers)
 // HTTPS → HTTP downgrades are NOT followed — the redirect response is returned as-is
+// Sensitive headers (Authorization, Cookie, Proxy-Authorization) are stripped
+// automatically when a redirect crosses to a different origin
 ClientFilters.FollowRedirects()
+
+// Custom set of headers to strip on cross-origin redirects
+ClientFilters.FollowRedirects(sensitiveHeaders = setOf("Authorization", "X-Api-Key"))
 
 // Request tracing (Zipkin-style)
 ServerFilters.RequestTracing()   // server-side
@@ -367,6 +382,7 @@ GET.and(header("Accept", "application/json").and(query("v", "2")))
 - **`request.path()` requires routing**: Calling `path()` on a non-routed request throws `IllegalStateException`. Only use inside a routed handler.
 - **Path matching is exact**: `/a` does NOT match `/a/b`. Use `"/a/{rest:.*}"` for prefix matching.
 - **Trailing slashes matter**: `/users` and `/users/` are different routes.
+- **`ReverseProxy` defaults to exact host matching**: The default `HostMatcher` is `ReverseProxy.Exact` (case-insensitive equality per RFC 7230). Use `ReverseProxy.Contains` explicitly when you need substring matching (e.g., AWS subdomains). `Exact` is safer — `Contains` can match unintended hosts if a short host name is a substring of another.
 
 ## Forms
 
@@ -473,6 +489,7 @@ val client = ClientFilters.Cookies(storage = InsecureCookieStorage())
 
 ### Cookie Storage Gotchas
 
+- **`FollowRedirects` strips credentials on cross-origin redirects**: By default, `Authorization`, `Cookie`, and `Proxy-Authorization` are removed from the forwarded request when the redirect target is a different origin (different scheme, host, or port). Pass a custom `sensitiveHeaders` set to change which headers are stripped.
 - **`BasicCookieStorage` is deprecated**: It has been renamed to `InsecureCookieStorage`. Replace usages to suppress deprecation warnings. Use `DefaultCookieStorage` for production — it prevents cross-origin cookie leakage.
 - **`LocalCookie` requires `origin`**: `LocalCookie(cookie, created, origin)` — the `origin: Uri` field is required when constructing `LocalCookie` instances directly.
 - **`CookieStorage.retrieve(uri)` takes a URI**: The `retrieve` method now takes the request `Uri` to enable origin-scoped filtering.
