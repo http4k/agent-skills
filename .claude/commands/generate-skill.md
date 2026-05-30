@@ -25,7 +25,29 @@ Clone the http4k source into a temporary directory within this repo. Source URL:
 The version determines the extraction approach:
 
 - **Bootstrap** (no existing skill content at `plugins/http4k/skills/http4k-development/SKILL.md`): Analyze the full codebase at the specified tag in `./tmp/http4k`
-- **Update** (skill content already exists): Determine the previous version from `plugins/http4k/.claude-plugin/plugin.json`, then fetch the previous tag into the tmp clone: `git -C ./tmp/http4k fetch --depth 1 origin tag <previous-tag>`. Use `git -C ./tmp/http4k diff <previous-tag>..<new-tag>` to scope the work, but read full files as needed for context
+- **Update** (skill content already exists): Determine the previous version from `plugins/http4k/.claude-plugin/plugin.json`, then fetch the previous tag into the tmp clone: `git -C ./tmp/http4k fetch --depth 1 origin tag <previous-tag>`. Use `git -C ./tmp/http4k diff <previous-tag>..<new-tag>` as a **signal of where to look** — not a checklist of things to record. For each module touched by the diff, re-read the current state of the module's public API and tests, then decide whether the reference file needs to change per the "API Surface Filter" below. The default outcome for any given module is **no edit**.
+
+## API Surface Filter (Update runs)
+
+Reference files describe **how to use a module**, not what changed between releases. Before editing any existing reference file, the change must shift one of:
+
+- **Public API surface** — new/removed/renamed public type, function, extension, or companion factory that a user would call
+- **Construction or configuration idiom** — the recommended way to build or wire up the module
+- **Testing story** — new fake, new in-memory handler, or change in how the module supports testability
+- **Gotcha surface** — new `require`/`check` constraint, new registration step that's easy to forget, or a newly-removed footgun
+- **Anti-pattern guidance** — something that used to be idiomatic but is now wrong, or vice versa
+
+**Do NOT edit a reference file for:**
+
+- Internal refactors that don't change any public symbol
+- Dependency version bumps (transitive or direct) that don't change the user-facing API
+- Test-only changes that don't reveal a new usage pattern
+- Signature tweaks (parameter rename, defaulted argument added) that don't change idiomatic usage
+- Doc/comment edits in the http4k source
+- Performance improvements with no API impact
+- Adding/removing overloads where the existing documented overload still works the same way
+
+When in doubt, **do not edit**. A clean diff of unchanged reference files is the expected outcome for most releases. Report which modules were re-examined and which were intentionally left untouched.
 
 ## Module Discovery
 
@@ -158,6 +180,8 @@ For each reference file, prioritize:
 3. **Testing patterns** — how to test using fakes and in-memory handlers
 4. **Common operations** — frequently needed patterns
 5. **Anti-patterns** — things that work but are wrong
+
+These priorities also define what is worth updating on a release. If a release does not move any of these, the reference file should remain unchanged.
 
 ### New Module Detection (Update runs only)
 

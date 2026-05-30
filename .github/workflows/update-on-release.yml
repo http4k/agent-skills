@@ -46,7 +46,7 @@ jobs:
             --permission-mode dontAsk \
             --model sonnet \
             --max-budget-usd 5 \
-            "Read the file .claude/commands/generate-skill.md for instructions. Follow those instructions exactly, using version ${VERSION} as the version argument. The \$ARGUMENTS placeholder in that file should be replaced with ${VERSION}. The http4k source has already been cloned to ./tmp/http4k with the required tags fetched."
+            "Read the file .claude/commands/generate-skill.md for instructions. Follow those instructions exactly, using version ${VERSION} as the version argument. The \$ARGUMENTS placeholder in that file should be replaced with ${VERSION}. The http4k source has already been cloned to ./tmp/http4k with the required tags fetched. IMPORTANT: this is an update run, not a bootstrap. Reference files describe how to use each module, not a changelog. Apply the API Surface Filter in the instructions — the default outcome for any given module is no edit. Only modify a reference file when a release shifts the public API surface, construction idiom, testing story, or gotcha surface for that module. Internal refactors, dep bumps, signature wiggles, and doc tweaks are not reasons to edit."
 
       - name: Clean up and verify generation
         run: |
