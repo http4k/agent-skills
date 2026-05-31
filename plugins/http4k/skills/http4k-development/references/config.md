@@ -110,7 +110,7 @@ secret(env).use { password ->
 // Second .use() throws IllegalStateException
 ```
 
-**Gotcha**: `secret.toString()` returns `"Secret(hashcode = ...)"`, NOT the value. Use `.use {}` to access.
+**Gotcha**: `secret.toString()` returns `"Secret(****)"`  — the value is never exposed. Use `.use {}` to access.
 
 ## YAML Configuration
 

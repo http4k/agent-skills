@@ -52,7 +52,7 @@ val oauthProvider = OAuthProvider(
     callbackUri = Uri.of("https://myapp.com/callback"),
     scopes = listOf("openid"),
     oAuthPersistence = persistence,
-    pkceGenerator = PkceChallengeAndVerifier.SECURE_PKCE
+    pkceGenerator = PkceChallengeAndVerifier::create
 )
 ```
 
@@ -318,4 +318,5 @@ val discovery = AuthServerDiscovery.fromKnownAuthServer(Uri.of("http://fake-serv
 - **authFilter redirects on missing token**: `oauthProvider.authFilter` returns a `307 TEMPORARY_REDIRECT` to the provider when no token is found in the request.
 - **callbackEndpoint must be routed**: The callback URI must be bound in your routes — use `oauthProvider.callbackEndpoint` which binds to the callback path.
 - **Token exchange is server-side**: The authorization code is exchanged for an access token on the server side (not in the browser), keeping the client secret safe.
-- **PKCE is optional**: Pass `pkceGenerator = PkceChallengeAndVerifier.SECURE_PKCE` for public clients that can't keep a client secret.
+- **PKCE is optional (client)**: Pass `pkceGenerator = PkceChallengeAndVerifier::create` for public clients that can't keep a client secret.
+- **PKCE on the server**: Pass `requirePkce = true` to `OAuthServer(...)` to mandate PKCE for all authorization code requests. Clients that omit `code_challenge` will be rejected.

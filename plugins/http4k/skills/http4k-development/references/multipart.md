@@ -136,3 +136,4 @@ val formLens = Body.multipartForm(
 - **Boundary must match**: When building manually, the boundary in `Content-Type` header must match the body's boundary.
 - **Lens replacement semantics**: Setting a field via lens replaces all values for that key, not appends.
 - **Default content type for unknown files**: Files without an explicit content-type default to `application/octet-stream`.
+- **Default size and count limits**: `MultipartFormBody.from()` enforces `MAX_STREAM_LENGTH` (10 MB) and `MAX_PART_COUNT` (1000 parts) by default. Exceeding either throws `ParseError`. Override via `maxStreamLength`/`maxPartCount` parameters on `from()` or on the `Body.multipartForm(...)` lens.
