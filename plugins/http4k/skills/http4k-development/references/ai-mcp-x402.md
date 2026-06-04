@@ -22,6 +22,19 @@ sealed interface PaymentCheck {
 
 Use `PaymentCheck` to decide per-request whether payment is needed.
 
+## Settlement Mode
+
+Controls when the X402 settlement call happens relative to tool execution:
+
+```kotlin
+enum class SettlementMode {
+    SettleBefore,  // Verify → Settle → run tool (default). Tool never runs if settlement fails.
+    SettleAfter    // Verify → run tool → Settle. Tool effect happens even if settle later fails.
+}
+```
+
+Use `SettleAfter` when the tool operation is idempotent and you want to avoid blocking on settlement before execution.
+
 ## X402ToolFilter (Tool-Level Payments)
 
 Wraps individual tools with payment verification and settlement. Returns structured `PaymentRequired` errors when payment is missing or invalid, and includes settlement details in the response meta on success.
@@ -38,8 +51,13 @@ val requirements = PaymentRequirements(
 
 val facilitator = X402Facilitator.Http(Uri.of("https://facilitator.example.com"), http)
 
+// Default: SettleBefore — settle before running the tool
 val paidTool = X402ToolFilter(facilitator) { PaymentCheck.Required(listOf(requirements)) }
     .then(Tool("premium_data", "get premium data") bind { Ok(listOf(Content.Text("Here is your data!"))) })
+
+// SettleAfter — run tool first, settle after
+val paidTool = X402ToolFilter(facilitator, mode = SettlementMode.SettleAfter) { PaymentCheck.Required(listOf(requirements)) }
+    .then(Tool("data", "get data") bind { Ok(listOf(Content.Text("result"))) })
 
 val server = mcp(
     ServerMetaData(McpEntity.of("paid-server"), Version.of("1.0.0")),
@@ -53,7 +71,13 @@ val server = mcp(
 Operates at the MCP protocol level via `McpFilters`. Throws `McpException` with code 402 on payment failure instead of returning structured tool errors.
 
 ```kotlin
+// Default: SettleBefore
 val filter = McpFilters.X402PaymentRequired(facilitator) { request: McpRequest ->
+    PaymentCheck.Required(listOf(requirements))
+}
+
+// Explicit mode
+val filter = McpFilters.X402PaymentRequired(facilitator, mode = SettlementMode.SettleAfter) { request: McpRequest ->
     PaymentCheck.Required(listOf(requirements))
 }
 ```
@@ -83,11 +107,15 @@ val settled: SettledResponse? = settlementLens(response.meta)
 
 ## Payment Flow (Tool-Level)
 
+**SettleBefore (default):**
 1. Client calls tool without payment → `ToolResponse.Error` with `PaymentRequired` in `structuredContent`
-2. Client extracts requirements from error, signs payment, retries with payment in `_meta`
-3. Server matches payment scheme/network against requirements
-4. Server verifies via facilitator, executes tool, settles via facilitator
-5. Server returns `ToolResponse.Ok` with `SettledResponse` in response `_meta`
+2. Client extracts requirements, signs payment, retries with payment in `_meta`
+3. Server matches scheme/network, verifies via facilitator, then settles
+4. If settlement fails, tool is never invoked — returns payment error
+5. Server executes tool and returns `ToolResponse.Ok` with `SettledResponse` in `_meta`
+
+**SettleAfter:**
+Steps 1–3 same; step 4 runs the tool first, then settles. The tool effect occurs even if settlement later fails.
 
 ## Error Responses
 
@@ -123,7 +151,7 @@ server.testMcpClient(Request(POST, "/mcp")).use { client ->
 ## Gotchas
 
 - **Scheme/network matching**: Payment is matched to requirements by `scheme` + `network` pair. If no requirement matches the payment's scheme/network, a "Unsupported payment scheme/network" error is returned.
-- **Settlement is automatic**: After successful verification, settlement happens immediately. If settlement fails, the tool response is suppressed and a payment error is returned instead.
+- **Settlement mode**: `SettleBefore` (default) — settlement happens before tool execution; if settlement fails the tool never runs. `SettleAfter` — tool runs first, settlement happens after; the tool's effect is not rolled back if settlement fails.
 - **ToolFilter vs McpFilter**: `X402ToolFilter` returns structured `ToolResponse.Error` (tool-level). `McpFilters.X402PaymentRequired` throws `McpException` (protocol-level). Use `X402ToolFilter` for per-tool payment gating.
 - **Meta lens creation**: Use `MetaKey.x402PaymentPayload()` and `MetaKey.x402Settled()` — these return specs that need `.toLens()` before use.
 - **Requires Moshi**: Payment serialization uses `X402Moshi`. Ensure `http4k-format-moshi` is on the classpath.

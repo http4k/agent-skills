@@ -27,16 +27,27 @@ val app = ServerFilters.DigestAuth(
     realm = "my-app",
     passwordLookup = { username -> findPasswordForUser(username) },
     qop = listOf(Qop.Auth),
-    digestMode = DigestMode.Standard,           // or DigestMode.Proxy
+    digestMode = DigestMode.Standard,             // or DigestMode.Proxy
     nonceGenerator = Nonce.SECURE_NONCE,
-    nonceVerifier = { nonce -> isValidNonce(nonce) },  // validate nonce freshness
-    algorithm = "MD5",
-    usernameKey = RequestKey.required("user")    // inject username into request context
+    nonceVerifier = { nonce -> isValidNonce(nonce) },
+    algorithm = DigestAlgorithm.MD5,             // or DigestAlgorithm.SHA_256
+    usernameKey = RequestKey.required("user")
 ).then { req ->
     val username = usernameKey(req)
     Response(OK).body("Hello $username")
 }
 ```
+
+## DigestAlgorithm
+
+```kotlin
+enum class DigestAlgorithm(val value: String) {
+    MD5("MD5"),
+    SHA_256("SHA-256")
+}
+```
+
+Use `DigestAlgorithm.SHA_256` for stronger hashing. The `algorithm` parameter on `DigestAuthProvider` and `ServerFilters.DigestAuth` takes a `DigestAlgorithm`, not a raw string.
 
 ## Client Filter
 
@@ -113,4 +124,4 @@ Qop.AuthInt   // authentication + integrity checking
 - **Client handles challenge automatically**: `ClientFilters.DigestAuth` intercepts `401` responses, extracts the challenge, computes the digest, and retries the request.
 - **Nonce count tracking**: The client tracks nonce reuse and increments `nc` (nonce count) for the same server nonce. A new server nonce resets the count.
 - **Timing-safe comparison**: Digest verification uses `MessageDigest.isEqual()` for constant-time comparison to prevent timing attacks.
-- **MD5 default**: The algorithm defaults to MD5 per RFC 2617. Other algorithms can be specified as a string.
+- **MD5 default**: The algorithm defaults to `DigestAlgorithm.MD5` per RFC 2617. Use `DigestAlgorithm.SHA_256` for stronger security. The `algorithm` parameter takes a `DigestAlgorithm` enum value, not a raw string.

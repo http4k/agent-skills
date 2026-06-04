@@ -32,11 +32,29 @@ val mcpApp = mcp(
     ServerMetaData("MyServer", "1.0.0"),
     NoMcpSecurity,
     tools, resources, prompts,
-    path = "/mcp"  // default
+    path = "/mcp",        // default
+    corsPolicy = null     // optional CorsPolicy for CORS + rebind protection
 )
 
 mcpApp.asServer(Undertow(8080)).start()
 ```
+
+Pass a `CorsPolicy` to enable CORS headers and DNS-rebind protection across all transport handlers:
+
+```kotlin
+val mcpApp = mcp(
+    ServerMetaData("MyServer", "1.0.0"),
+    NoMcpSecurity,
+    tools,
+    corsPolicy = CorsPolicy(
+        origins = OriginPolicy.AllowAll(),
+        headers = listOf("Authorization", "Content-Type"),
+        methods = listOf(Method.GET, Method.POST)
+    )
+)
+```
+
+All `mcp*` variants accept `corsPolicy`: `mcpSse()`, `mcpWebsocket()`, `mcpJsonRpc()`, `mcpHttpNonStreaming()`.
 
 ## Custom Initialize Handler
 

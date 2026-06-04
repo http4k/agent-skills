@@ -144,6 +144,7 @@ val app = auth.then(wsHandler)
 // Built-in filters
 ServerFilters.InitialiseWsRequestContext(contexts)  // Request context for WS
 ServerFilters.SetWsSubProtocol("graphql-ws")        // Set subprotocol
+ServerFilters.WsRebindProtection(corsPolicy)        // DNS-rebind protection for WS upgrade requests
 ```
 
 ## PolyHandler (Combined HTTP + WS + SSE)
@@ -195,7 +196,7 @@ val reported = PolyFilters.ReportTransaction(
 // Events overload — emits HttpEvent/SseEvent/WsEvent
 val reported2 = PolyFilters.ReportTransaction(events)
 
-// Combined HTTP CORS + SSE rebind protection
+// Combined HTTP CORS + SSE rebind protection + WebSocket rebind protection
 val cors = PolyFilters.CorsAndRebindProtection(corsPolicy)
 ```
 
@@ -206,6 +207,11 @@ val app = safe.then(secured.then(polyHandler))
 ```
 
 > **Deprecation**: `ServerFilters.CorsAndRebindProtection()` is deprecated. Use `PolyFilters.CorsAndRebindProtection()` instead.
+
+`PolyFilters.CorsAndRebindProtection()` applies:
+- HTTP: `ServerFilters.Cors(corsPolicy)`
+- SSE: `ServerFilters.SseRebindProtection(corsPolicy)`
+- WebSocket: `ServerFilters.WsRebindProtection(corsPolicy)`
 
 ## Testing
 
@@ -274,6 +280,19 @@ wsHandler.testWsClient(Request(GET, "/")).useClient {
     assertThat(response, equalTo(WsMessage("Echo: hello")))
 }  // auto-closes
 ```
+
+## Parsing SSE Streams
+
+`InputStream.chunkedSseSequence()` parses an SSE byte stream into `SseMessage` objects. Use this when consuming a raw SSE stream from an HTTP response body.
+
+```kotlin
+val messages: Sequence<SseMessage> = response.body.stream.chunkedSseSequence()
+
+// Limit maximum buffered message size (default: 10 MB)
+val messages = response.body.stream.chunkedSseSequence(maxMessageSize = 1 * 1024 * 1024)
+```
+
+Messages exceeding `maxMessageSize` bytes are silently discarded. `DEFAULT_MAX_MESSAGE_SIZE` is 10 MB (`10 * 1024 * 1024`).
 
 ## SSE Headers
 

@@ -71,7 +71,8 @@ myHandler.asServer(
     cfg = Jetty(9000),
     agentCard = agentCard,
     tasks = TaskStorage.InMemory(),
-    rpcPath = "/"
+    rpcPath = "/",
+    pushNotificationUrlPolicy = PushNotificationUrlPolicy.Default  // recommended; blocks SSRF targets
 )
 ```
 
@@ -176,6 +177,34 @@ val sender = PushNotificationSender(
 sender.send(task)  // sends a POST to all registered push URLs for the task
 ```
 
+### Push Notification URL Policy
+
+`PushNotificationUrlPolicy` controls which URLs are allowed to receive push notifications, preventing SSRF attacks where an agent is tricked into sending notifications to internal infrastructure.
+
+```kotlin
+// Default: blocks loopback, link-local, site-local, multicast, and ULA IPv6
+PushNotificationUrlPolicy.Default
+
+// Allow any URL (useful in tests or trusted environments)
+PushNotificationUrlPolicy.AllowAll
+
+// Custom policy
+val policy = PushNotificationUrlPolicy { uri -> uri.host.endsWith(".example.com") }
+```
+
+`PushNotificationSender.Http()` uses `Default` by default. The `asServer()` convenience extension and `a2aJsonRpc()` routing function use `AllowAll` by default — pass `PushNotificationUrlPolicy.Default` explicitly for production deployments:
+
+```kotlin
+// Production-safe setup
+myHandler.asServer(
+    cfg = Jetty(9000),
+    agentCard = agentCard,
+    pushNotificationUrlPolicy = PushNotificationUrlPolicy.Default
+)
+```
+
+`A2A.setPushConfig()` validates the URL against the policy and throws `IllegalArgumentException` if rejected.
+
 ## Protocol Negotiation
 
 `A2AProtocolNegotiation` middleware validates the `A2A-Version` header against the server's supported capabilities. It's applied automatically by `a2aJsonRpc` and `a2aRest`. If the client sends an unsupported version, the request is rejected with an appropriate error.
@@ -213,5 +242,6 @@ fun `test receives A2AClient`(client: A2AClient) {
 - **SSE requires `PolyHandler`**: The SSE subscription endpoint (`tasks().subscribe()`) only works when the server is a `PolyHandler`. If you extract just the `http` part, SSE will return 404.
 - **`TaskSubscriptions.NoOp()` is the default**: If you don't pass subscriptions, `NoOp()` is used by the convenience factory methods — SSE task subscriptions silently do nothing. Pass `TaskSubscriptions.InMemory()` explicitly if you need SSE push for task updates.
 - **`PushNotificationConfigStorage` vs `TaskSubscriptions`**: Push notifications (webhooks via HTTP POST) and SSE subscriptions are separate mechanisms. Use both if you want to support both patterns.
+- **`PushNotificationUrlPolicy` default differs by entry point**: `PushNotificationSender.Http()` defaults to `PushNotificationUrlPolicy.Default` (blocks SSRF-prone addresses). `asServer()` and `a2aJsonRpc()` default to `AllowAll`. Pass `PushNotificationUrlPolicy.Default` explicitly in production for the routing entry points.
 - **`NotifyingTaskStorage` must be wired to subscriptions manually**: If you use `NotifyingTaskStorage`, its callback is responsible for calling `subscriptions.notify(task)`. The `withSubscriptions` extension does this automatically.
 - **`PolyFilters.OpenTelemetryTracing` for MCP/A2A**: When wrapping a `PolyHandler` with OpenTelemetry, use `PolyFilters.OpenTelemetryTracing` (not `ServerFilters.OpenTelemetryTracing` which only covers `HttpHandler`).
