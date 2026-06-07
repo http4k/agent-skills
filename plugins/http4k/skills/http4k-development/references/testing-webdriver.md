@@ -67,6 +67,18 @@ driver.get("http://user:pass@example.com/page")
 // Subsequent form submissions include Authorization header
 ```
 
+## File Upload
+
+```kotlin
+// Single file
+driver.findElement(By.id("file-input")).sendKeys("/path/to/file.txt")
+
+// Multiple files — pass each path as a separate argument
+driver.findElement(By.id("multi-file-input")).sendKeys("/path/to/a.txt", "/path/to/b.txt")
+
+driver.findElement(By.tagName("button")).submit()
+```
+
 ## Gotchas
 
 - **No real browser**: Uses JSoup to parse HTML. No JavaScript execution.
