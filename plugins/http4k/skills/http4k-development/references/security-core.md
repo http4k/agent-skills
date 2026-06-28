@@ -124,6 +124,31 @@ val security = OpenIdConnectSecurity(
 )
 ```
 
+## MutualTLSSecurity
+
+mTLS (client certificate) security. The handshake is enforced at the transport layer, so the filter defaults to a no-op. Use the `filter` parameter only for additional application-layer checks.
+
+```kotlin
+// No-op filter — mTLS enforced at the server/transport level
+val security = MutualTLSSecurity()
+
+// With additional application-layer check
+val security = MutualTLSSecurity(filter = myClientCertFilter, name = "mtls")
+```
+
+## DeviceCodeOAuthSecurity
+
+OAuth 2.0 device code flow — for OpenAPI spec generation.
+
+```kotlin
+DeviceCodeOAuthSecurity(
+    deviceAuthorizationUrl = Uri.of("https://auth.example.com/device/code"),
+    tokenUrl = Uri.of("https://auth.example.com/token"),
+    scopes = listOf(OAuthScope("read")),
+    filter = ServerFilters.BearerAuth { validateToken(it) }
+)
+```
+
 ## Composition
 
 ```kotlin

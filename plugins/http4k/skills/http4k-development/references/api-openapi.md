@@ -16,7 +16,7 @@ val api = "/api" bind contract {
     descriptionPath = "/docs"
     includeDescriptionRoute = true
     preFlightExtraction = PreFlightExtraction.All
-    tags += Tag("users", "User management")
+    tags += Tag("users", description = "User management")
 
     routes += "/users" meta {
         summary = "List users"
@@ -114,13 +114,25 @@ val response = route(Request(GET, "/test"))
 ## Renderers
 
 ```kotlin
-// OpenAPI 3.0 (default)
+// OpenAPI 3.2 (default)
 val renderer = OpenApi3(
     apiInfo = ApiInfo("My API", "1.0.0", "Description"),
     json = Jackson
 )
 
-// OpenAPI 3.0 with servers
+// With richer ApiInfo metadata
+val renderer = OpenApi3(
+    apiInfo = ApiInfo(
+        title = "My API",
+        version = "1.0.0",
+        description = "Full description",
+        summary = "Short summary",
+        license = ApiLicense.Apache2_0  // or MIT, GPL3_0, or custom ApiLicense(name, identifier, url)
+    ),
+    json = Jackson
+)
+
+// OpenAPI 3.2 with servers
 val renderer = OpenApi3(
     apiInfo = ApiInfo("My API", "1.0.0"),
     json = Jackson,
@@ -137,12 +149,32 @@ val renderer = OpenApi3(
     version = OpenApiVersion._3_1_0
 )
 
+// OpenAPI 3.0
+val renderer = OpenApi3(
+    apiInfo = ApiInfo("My API", "1.0.0"),
+    json = Jackson,
+    version = OpenApiVersion._3_0_0
+)
+
 // OpenAPI 2.0 (Swagger)
 val renderer = OpenApi2(
     apiInfo = ApiInfo("My API", "1.0.0"),
     json = Jackson,
     baseUri = Uri.of("https://api.example.com")
 )
+```
+
+## Tags
+
+```kotlin
+// Simple tag
+Tag("users")
+
+// With description
+Tag("users", description = "User management")
+
+// Extended tag metadata (renders into spec where supported)
+Tag("payments", description = "Payment flows", summary = "Payments", parent = "commerce", kind = "domain")
 ```
 
 ## Security
@@ -213,6 +245,7 @@ preFlightExtraction = PreFlightExtraction.None
 
 ## Gotchas
 
+- **Default version is 3.2**: `OpenApi3` defaults to `OpenApiVersion._3_2_0`. Pass `version = OpenApiVersion._3_0_0` or `_3_1_0` to pin to an older spec.
 - **Spec served at descriptionPath**: Set `descriptionPath = "/docs"` and `includeDescriptionRoute = true` to serve the generated spec. Default path is the contract root.
 - **Handler nesting**: Path-parameter routes return `{ params -> { request -> response } }` — the outer function receives extracted path params, the inner receives the request.
 - **Security inheritance**: Contract-level security applies to all routes unless overridden per-route via `meta { security = ... }`.

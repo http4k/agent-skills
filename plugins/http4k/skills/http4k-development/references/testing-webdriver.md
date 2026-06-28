@@ -10,7 +10,11 @@ Selenium WebDriver backed by an http4k `HttpHandler`. Test web UIs without start
 ## Construction
 
 ```kotlin
+// Default — no page runtime behaviour
 val driver = Http4kWebDriver(myApp)
+
+// With a PageBehaviour (e.g., for datastar or custom JS simulation)
+val driver = Http4kWebDriver(myApp, behaviour = myBehaviour)
 ```
 
 ## Navigation
@@ -78,6 +82,27 @@ driver.findElement(By.id("multi-file-input")).sendKeys("/path/to/a.txt", "/path/
 
 driver.findElement(By.tagName("button")).submit()
 ```
+
+## PageBehaviour
+
+Extension point to hook page runtime behaviour into `Http4kWebDriver`. Implement to simulate a frontend framework or intercept element interactions.
+
+```kotlin
+interface PageBehaviour {
+    fun pageLoaded(document: Document) {}
+    fun before(event: PageEvent, element: Element): Boolean = false  // return true to suppress default
+    fun after(event: PageEvent, element: Element) {}
+    fun displayed(element: Element): Boolean? = null  // null → throws FeatureNotImplementedYet
+
+    companion object {
+        val NoOp = object : PageBehaviour {}  // default — no-op
+    }
+}
+
+enum class PageEvent { Click, Submit, SendKeys, Clear }
+```
+
+`JSoupWebElement.isDisplayed()` delegates to `behaviour.displayed()`. Without a `PageBehaviour`, calling `isDisplayed` throws `FeatureNotImplementedYet`. See `http4k-testing-webdriver-datastar` for a full implementation.
 
 ## Gotchas
 

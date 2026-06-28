@@ -12,9 +12,8 @@ Pug4J (Jade) template engine integration.
 ```kotlin
 val templates = Pug4jTemplates()
 
-// With custom PugConfiguration
-val config = PugConfiguration().apply { prettyPrint = true }
-val templates = Pug4jTemplates(config)
+// With custom PugEngine.Builder
+val templates = Pug4jTemplates(PugEngine.builder().prettyPrint(true))
 
 val renderer = templates.CachingClasspath("org.example.views")
 val renderer = templates.HotReload("src/main/resources/org/example/views")
