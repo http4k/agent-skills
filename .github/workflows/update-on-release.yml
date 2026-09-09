@@ -17,12 +17,12 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: 'lts/*'
 
       - name: Install Claude Code CLI
         run: npm install -g @anthropic-ai/claude-code
@@ -36,6 +36,10 @@ jobs:
           if [ -n "$PREV_VERSION" ] && [ "$PREV_VERSION" != "$VERSION" ]; then
             git -C ./tmp/http4k fetch --depth 1 origin tag "$PREV_VERSION"
           fi
+
+      - name: Trust workspace
+        run: |
+          jq -n --arg dir "$PWD" '{projects: {($dir): {hasTrustDialogAccepted: true}}}' > ~/.claude.json
 
       - name: Generate skill content
         env:
