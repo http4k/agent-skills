@@ -518,6 +518,19 @@ val app = ServerFilters.InitialiseRequestContext(contexts)
     .then(handler)
 ```
 
+## Response Context
+
+`ResponseKey` attaches typed values to a `Response`, mirroring `RequestKey`. Use `required` for a mandatory value (throws `LensFailure` if missing) or `optional` for a nullable one:
+
+```kotlin
+val userKey = ResponseKey.required<User>("user")
+val response = Response(OK).with(userKey of user)
+userKey(response)   // retrieve typed value
+
+val maybeUserKey = ResponseKey.optional<User>("user")
+maybeUserKey(Response(OK))   // null instead of throwing
+```
+
 ## Testing Patterns
 
 http4k's function-based design makes testing straightforward:

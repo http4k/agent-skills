@@ -73,6 +73,20 @@ iot.listStreams().successValue()
 iot.deleteStream(streamId).successValue()
 ```
 
+## Certificates
+
+```kotlin
+val certificateId = CertificateId.of("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
+
+val description = iot.describeCertificate(certificateId).successValue().certificateDescription
+
+description.status          // CertificateStatus: ACTIVE / INACTIVE / REVOKED / ...
+description.certificateArn
+description.validity?.notAfter
+```
+
+`CertificateId` is validated as 64 hex characters (the SHA-256 of the DER-encoded certificate).
+
 ## Endpoints
 
 ```kotlin

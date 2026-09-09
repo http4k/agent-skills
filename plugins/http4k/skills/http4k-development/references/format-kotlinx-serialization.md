@@ -82,3 +82,4 @@ val lens = KotlinxSerialization.autoBody<MyType>(serializer).toLens()
 - **BigInteger not supported**: `bigInteger()` mappings throw `UnsupportedOperationException`. Use `long()` or `text()` for large integers.
 - **BigDecimal as string**: BigDecimal values are serialized as string content in `JsonPrimitive`, which may cause precision representation differences compared to Jackson/Gson.
 - **`@Serializable` annotation required**: Unlike reflection-based libraries (Jackson, Gson), kotlinx.serialization requires `@Serializable` on data classes for auto-marshalling.
+- **`parse` accepts top-level objects and arrays only**: `KotlinxSerialization.parse(...)` handles both `{...}` and `[...]` input. Any other top-level JSON value (e.g. a bare string or number) throws `SerializationException`.

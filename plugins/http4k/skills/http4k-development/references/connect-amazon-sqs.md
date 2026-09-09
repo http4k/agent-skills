@@ -64,6 +64,10 @@ val messages = sqs.receiveMessage(
 
 messages.forEach { msg ->
     println(msg.Body)
+
+    // Extend (or, with 0, end) how long the message stays invisible to other consumers
+    sqs.changeMessageVisibility(queueUrl, msg.ReceiptHandle!!, visibilityTimeout = 0).successValue()
+
     // Delete after processing
     sqs.deleteMessage(queueUrl, msg.ReceiptHandle!!).successValue()
 }

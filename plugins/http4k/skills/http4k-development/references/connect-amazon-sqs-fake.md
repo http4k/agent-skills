@@ -45,6 +45,8 @@ fakeSqs.behave()
 ## Gotchas
 
 - Extends `ChaoticHttpHandler`
+- `changeMessageVisibility` only checks that the queue exists — the fake doesn't track
+  per-message visibility timeouts, so it has nothing else to change
 - MD5 checksums validated on receive
 - Queue URLs generated as `http://localhost:{port}/{account}/{name}`
 - FIFO queues supported, including deduplication: a repeat `MessageDeduplicationId` within

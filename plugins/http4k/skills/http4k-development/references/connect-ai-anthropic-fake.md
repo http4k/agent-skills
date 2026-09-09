@@ -14,6 +14,19 @@ val fake = FakeAnthropicAI()
 val client = AnthropicAI.Http(ApiKey.of("test-key"), ApiVersion._2023_06_01, fake)
 ```
 
+`FakeAnthropicAI` also handles `countTokens`, `getModels`/`getModel`, message batches, and file upload/download/list/delete. Its backing stores are constructor params you can seed or inspect directly:
+
+```kotlin
+val fake = FakeAnthropicAI(
+    completionGenerators = mapOf(AnthropicModels.Claude_Sonnet_5 to MessageContentGenerator.Echo),
+    models = DEFAULT_ANTHROPIC_MODELS,   // Storage<ModelInfo>, pre-seeded with the Claude_* models
+    batches = Storage.InMemory(),        // Storage<StoredBatch>
+    files = Storage.InMemory()           // Storage<StoredFile>
+)
+```
+
+Message batches complete synchronously — `createMessageBatch` returns a batch already in `ProcessingStatus.ended` with results available immediately.
+
 ## Convenience Client
 
 ```kotlin

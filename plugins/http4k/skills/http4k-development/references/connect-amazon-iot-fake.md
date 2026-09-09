@@ -22,6 +22,7 @@ val jobs = Storage.InMemory<StoredJob>()
 val fakeIot = FakeIot(
     jobs = jobs,
     streams = Storage.InMemory(),
+    certificates = Storage.InMemory(),
     region = Region.of("ldn-north-1"),
     clock = Clock.systemUTC()
 )
@@ -45,6 +46,9 @@ val stored = fakeIot.job(jobId)!!
 
 assertThat(stored.status, equalTo(JobStatus.IN_PROGRESS))
 assertThat(stored.executions.keys, equalTo(setOf(ThingName.of("my-thing"))))
+
+val storedCertificate = fakeIot.certificate(certificateId)!!
+assertThat(storedCertificate.status, equalTo(CertificateStatus.ACTIVE))
 ```
 
 ## Shared Storage with the Jobs Data Plane
