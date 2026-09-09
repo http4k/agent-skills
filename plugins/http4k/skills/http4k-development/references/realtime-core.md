@@ -209,9 +209,17 @@ val app = safe.then(secured.then(polyHandler))
 > **Deprecation**: `ServerFilters.CorsAndRebindProtection()` is deprecated. Use `PolyFilters.CorsAndRebindProtection()` instead.
 
 `PolyFilters.CorsAndRebindProtection()` applies:
-- HTTP: `ServerFilters.Cors(corsPolicy)`
+- HTTP: `ServerFilters.HttpRebindProtection(corsPolicy)`
 - SSE: `ServerFilters.SseRebindProtection(corsPolicy)`
 - WebSocket: `ServerFilters.WsRebindProtection(corsPolicy)`
+
+`ServerFilters.HttpRebindProtection(corsPolicy)` is CORS plus blocking: a non-`OPTIONS` request
+carrying an `Origin` the policy rejects is answered `FORBIDDEN` rather than being served without
+CORS headers. Use it standalone on an HTTP-only handler:
+
+```kotlin
+val app = ServerFilters.HttpRebindProtection(corsPolicy).then(httpHandler)
+```
 
 ## Testing
 

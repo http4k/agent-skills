@@ -43,6 +43,27 @@ cognito.adminCreateUser(
 cognito.adminDeleteUser(userPoolId = poolId, username = Username.of("user@example.com")).successValue()
 ```
 
+## MFA Preferences
+
+```kotlin
+// as an admin
+cognito.adminSetUserMFAPreference(
+    Username = Username.of("user@example.com"),
+    UserPoolId = poolId,
+    SoftwareTokenMfaSettings = SoftwareTokenMfaSettingsType(Enabled = true, PreferredMfa = true),
+    SMSMfaSettings = SMSMfaSettingsType(Enabled = false)
+).successValue()
+
+// as the signed-in user
+cognito.setUserMFAPreference(
+    AccessToken = accessToken,
+    EmailMfaSettings = EmailMfaSettingsType(Enabled = true, PreferredMfa = true),
+    WebAuthnMfaSettings = WebAuthnMfaSettingsType(Enabled = true)
+).successValue()
+```
+
+Omitted settings are left untouched; only one factor may be `PreferredMfa`.
+
 ## Authentication
 
 ```kotlin

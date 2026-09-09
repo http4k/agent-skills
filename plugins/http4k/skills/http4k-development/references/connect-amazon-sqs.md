@@ -52,11 +52,15 @@ sqs.sendMessageBatch(
 
 ```kotlin
 val messages = sqs.receiveMessage(
-    QueueUrl = queueUrl,
-    MaxNumberOfMessages = 10,
-    WaitTimeSeconds = 20,           // long polling
-    VisibilityTimeout = 30
-).successValue().Messages
+    queueUrl = queueUrl,
+    maxNumberOfMessages = 10,
+    waitTimeSeconds = 20,           // long polling
+    visibilityTimeout = 30,
+    messageSystemAttributeNames = listOf(
+        MessageSystemAttributeName.SentTimestamp,
+        MessageSystemAttributeName.ApproximateReceiveCount
+    )
+).successValue()
 
 messages.forEach { msg ->
     println(msg.Body)

@@ -24,7 +24,13 @@ val server = myApp.asK8sServer(::Undertow, env = Environment.ENV)
 val server = myApp.asK8sServer(::Undertow, healthApp = Health(
     checks = listOf(databaseCheck, cacheCheck)
 ))
+
+// PolyHandler (HTTP + WS + SSE) served alongside the health port
+val server = polyApp.asK8sServer(::Undertow, port = 9000, healthPort = 9001)
 ```
+
+A `PolyHandler` needs a `(port: Int) -> PolyServerConfig`; the health app is always an
+`HttpHandler` served by the same config on the health port.
 
 ## Health Checks
 

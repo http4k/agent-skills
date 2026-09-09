@@ -33,6 +33,23 @@ dynamo.listTables().successValue()
 dynamo.deleteTable(TableName.of("users")).successValue()
 ```
 
+## Time To Live
+
+```kotlin
+dynamo.updateTimeToLive(
+    TableName.of("users"),
+    TimeToLiveSpecification(Enabled = true, AttributeName = AttributeName.of("expiresAt"))
+).successValue()
+
+val ttl = dynamo.describeTimeToLive(TableName.of("users")).successValue().TimeToLiveDescription
+
+ttl.TimeToLiveStatus   // ENABLED / ENABLING / DISABLING / DISABLED
+ttl.AttributeName      // null once fully DISABLED
+```
+
+`AttributeName` is required on `TimeToLiveSpecification` even when disabling — it names the
+attribute TTL applies to.
+
 ## Item Operations
 
 ```kotlin

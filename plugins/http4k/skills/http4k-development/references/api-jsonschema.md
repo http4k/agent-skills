@@ -59,6 +59,18 @@ SchemaModelNamer.Full       // "com.example.User" (qualified name)
 SchemaModelNamer.Canonical  // "com.example.User" (canonical name)
 ```
 
+Compose partial namers with `SchemaModelNamerChain`, which returns `null` to defer to the next
+one in the chain:
+
+```kotlin
+val namer = SchemaModelNamerChain { (it as? Named)?.schemaName }
+    .then(SchemaModelNamerChain { (it as? Legacy)?.oldName })
+    .then(SchemaModelNamer.Simple)   // terminates the chain with a total namer
+```
+
+`then(SchemaModelNamer)` returns a `SchemaModelNamer` — always end a chain with one so every
+model resolves to a name.
+
 ## FieldRetrieval
 
 Extracts field values and metadata from objects:
