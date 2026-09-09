@@ -25,7 +25,7 @@ Clone the http4k source into a temporary directory within this repo. Source URL:
 The version determines the extraction approach:
 
 - **Bootstrap** (no existing skill content at `plugins/http4k/skills/http4k-development/SKILL.md`): Analyze the full codebase at the specified tag in `./tmp/http4k`
-- **Update** (skill content already exists): Determine the previous version from `plugins/http4k/.claude-plugin/plugin.json`, then fetch the previous tag into the tmp clone: `git -C ./tmp/http4k fetch --depth 1 origin tag <previous-tag>`. Use `git -C ./tmp/http4k diff <previous-tag>..<new-tag>` as a **signal of where to look** — not a checklist of things to record. For each module touched by the diff, re-read the current state of the module's public API and tests, then decide whether the reference file needs to change per the "API Surface Filter" below. The default outcome for any given module is **no edit**.
+- **Update** (skill content already exists): Determine the previous version from `plugins/http4k/.claude-plugin/plugin.json` — this is the last version the references were actually generated for, which may be **several releases behind** the target version if earlier runs failed. Do not assume a single-release step: the span `<previous-tag>..<new-tag>` covers every intervening release, and all of those changes must be accounted for in this run. Fetch the previous tag into the tmp clone: `git -C ./tmp/http4k fetch --depth 1 origin tag <previous-tag>`. Use `git -C ./tmp/http4k diff <previous-tag>..<new-tag>` as a **signal of where to look** — not a checklist of things to record. For each module touched by the diff, re-read the current state of the module's public API and tests, then decide whether the reference file needs to change per the "API Surface Filter" below. The default outcome for any given module is **no edit**.
 
 ## API Surface Filter (Update runs)
 
@@ -187,7 +187,7 @@ These priorities also define what is worth updating on a release. If a release d
 
 After computing the diff, explicitly check for new modules:
 
-1. Parse added lines from the diff for `settings.gradle.kts` — look for lines starting with `+include(` to identify newly added modules
+1. Parse added lines from the diff for `settings.gradle.kts` — look for lines starting with `+include(` to identify newly added modules. When the span covers multiple releases, this catches modules added in any of them
 2. For each new module name found:
    - Compute the reference file name: strip the `http4k-` prefix → `references/{module}.md`
    - If `references/{module}.md` does NOT exist → treat this module as needing a full reference file generation (same as bootstrap for that module alone)
