@@ -114,7 +114,7 @@ val client = ClientFilters.DigestAuth(
 
 ```kotlin
 Qop.Auth      // authentication only (most common)
-Qop.AuthInt   // authentication + integrity checking
+Qop.AuthInt   // authentication + integrity checking — binds the digest to the request body
 ```
 
 ## Gotchas
@@ -125,3 +125,4 @@ Qop.AuthInt   // authentication + integrity checking
 - **Nonce count tracking**: The client tracks nonce reuse and increments `nc` (nonce count) for the same server nonce. A new server nonce resets the count.
 - **Timing-safe comparison**: Digest verification uses `MessageDigest.isEqual()` for constant-time comparison to prevent timing attacks.
 - **MD5 default**: The algorithm defaults to `DigestAlgorithm.MD5` per RFC 2617. Use `DigestAlgorithm.SHA_256` for stronger security. The `algorithm` parameter takes a `DigestAlgorithm` enum value, not a raw string.
+- **`Qop.AuthInt` buffers the entire body in memory**: with `AuthInt` negotiated, both `ServerFilters.DigestAuth` and `ClientFilters.DigestAuth` read the full request entity body into memory to compute/verify the digest, so it's unsuitable for very large or streamed request bodies.
