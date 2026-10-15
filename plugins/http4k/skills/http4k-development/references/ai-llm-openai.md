@@ -37,6 +37,14 @@ val imageGen = ImageGeneration.OpenAI(
 )
 ```
 
+## Structured Decisions
+
+```kotlin
+val decide = Decide.OpenAI(apiKey = ApiKey.of("sk-..."), http = JavaHttpClient())
+```
+
+Backed by the OpenAI Decisions API. Accepts `Content.Text` and `Content.Image` with `Resource.Binary` (sent as a data URL, needs a mime type); URL-referenced images or other content types return a `Failure`. Test with `FakeOpenAI` (see `connect-ai-openai-fake`).
+
 ## OpenAI-Compatible Endpoints
 
 For any OpenAI-compatible API (Ollama, LM Studio, local models):

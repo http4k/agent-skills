@@ -50,6 +50,32 @@ val result = imageGen(ImageRequest(
 ))
 ```
 
+## Structured Decisions (`Decide`)
+
+`Decide` evaluates named questions (choice, score, yes/no) against a piece of state and returns typed answers with probabilities.
+
+```kotlin
+val decide: Decide = Decide.OpenAI(apiKey)   // or Decide.TypeSafe(apiKey)
+
+val result: LLMResult<DecideResponse> = decide(
+    DecideRequest(
+        state = "I've been trying to connect Stripe for 3 days and it keeps failing.",   // or List<Content>
+        questions = mapOf(
+            "department" to Question.Choice("Which team should handle this", mapOf("billing" to "Payments", "technical" to "Bugs")),
+            "frustration" to Question.Score("How frustrated is the customer", listOf(Question.Score.Level("Calm", "Just facts"), Question.Score.Level("Angry"))),
+            "is_urgent" to Question.YesNo("The message conveys urgency")
+        ),
+        model = ModelName.of("...")
+    )
+)
+
+result.orThrow { error(it) }.answers["department"]   // Answer.Choice(choice, probabilities, confidence)
+```
+
+`Answer` is `Choice`, `Score` (score + per-level probabilities), `YesNo(probability)` or `Refusal` — match on the sealed type. Providers may reject unsupported `Content` (e.g. images) with `LLMError.Internal`.
+
+Test any `Decide` implementation by implementing the `DecideContract` test fixture (from `http4k-ai-llm-core` testFixtures) against both the fake and the real provider.
+
 ## Message Model
 
 ```kotlin
@@ -82,6 +108,7 @@ ModelParams(
     tools = listOf(myTool),
     toolSelection = ToolSelection.Auto,
     topP = 0.9,
+    reasoningEffort = ReasoningEffort.MEDIUM,   // optional: NONE, LOW, MEDIUM, HIGH
     responseFormat = ChatResponseFormat.JsonObject
 )
 ```

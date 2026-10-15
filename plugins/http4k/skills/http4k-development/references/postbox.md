@@ -46,25 +46,28 @@ val app = routes(
 - `RequestIdResolvers`: `fromPath(name)`, `fromHeader(name)`, or `fromPath()` (whole URI path as the id).
 - `PendingResponseGenerators`: `Empty` (plain 202), `linkHeader(pathName)` (202 + `Link` header pointing at the status endpoint), `redirect(pathName)` (302).
 
-## Background Processing: `PostboxProcessing`
+## Background Processing: `ScheduledPostboxProcessing`
 
 ```kotlin
-val processing = PostboxProcessing(
+val processing = ScheduledPostboxProcessing(
     transactor,
     target = myDownstreamHandler,       // HttpHandler that actually does the work
     batchSize = 10,
     maxFailures = 3,                    // after this many failures, mark Dead instead of retrying
-    maxPollingTime = Duration.ofSeconds(5),
+    pollInterval = Duration.ofSeconds(5), // delay after each batch completes before polling again
     lease = Duration.ofSeconds(30),     // claim exclusivity window
     events = StdOutEvents,
-    successCriteria = { it.status.successful }
+    successCriteria = { it.status.successful },
+    externalScheduler = null            // optional ScheduledExecutorService; default is a private virtual-thread scheduler
 )
 
-processing.start()  // runs the poll loop on a background (virtual) thread
-processing.stop()   // graceful shutdown, waits up to shutdownGracePeriod for in-flight work
+processing.start()  // schedules the poll loop with fixed delay
+processing.stop()   // cancels polling, waits up to shutdownGracePeriod for the in-flight batch
 ```
 
-Each cycle: `claim()`s a batch of due `PendingRequest`s (atomically marking them `Processing` so other processors skip them), calls `target` for each, then finalises via `markProcessed`/`markFailed`/`markDead` depending on `successCriteria` and `maxFailures`. Failed requests are rescheduled with `backoffStrategy` (default: exponential with jitter — `2^failures * 5s + random(10)s`).
+`processPendingRequests()` runs a single batch synchronously and returns `Result<Int, RequestProcessingError>`. A provided `externalScheduler` is never shut down by `stop()`. `PostboxProcessing` (and `ExecutionContext`/`DefaultExecutionContext`) are deprecated — use `ScheduledPostboxProcessing` for new code.
+
+Each cycle: `claim()`s a batch of due `PendingRequest`s (atomically marking them `Processing` so other processors skip them), calls `target` for each, then finalises via `markProcessed`/`markFailed`/`markDead` depending on `successCriteria` and `maxFailures`. Failed requests are rescheduled with `backoffStrategy` (`BackoffStrategy`, default `defaultBackoffStrategy`: exponential with jitter — `2^failures * 5s + random(10)s`).
 
 `events` receives `ProcessingEvent`s (`BatchProcessingSucceeded`, `RequestProcessingSucceeded`, `RequestScheduledForRetry`, `RequestMarkedDead`, `RequestProcessingFailed`, `PollWait`, `ShutdownTimedOut`) — wire these to your metrics/logging.
 
@@ -82,22 +85,6 @@ val transactor: TransactionalPostbox = PostboxTransactor(dataSource, tablePrefix
 
 `PostboxTransactor` wraps `JdbcTransactor` so `transactor.perform { postbox -> ... }` runs against a `Postbox` bound to a single JDBC connection/transaction — use this to make storing a postbox entry part of the same commit as your domain writes.
 
-## ExecutionContext
-
-`PostboxProcessing` delegates its poll/sleep loop to an `ExecutionContext` so it can be tested without real threads or sleeps:
-
-```kotlin
-interface ExecutionContext {
-    fun isRunning(): Boolean
-    fun start(runnable: Runnable)
-    fun pause(duration: Duration)
-    fun stop(): Boolean          // true if in-flight work finished within the grace period
-    fun currentTime(): Instant
-}
-```
-
-`DefaultExecutionContext(shutdownGracePeriod)` is the production implementation (virtual-thread executor, real `Thread.sleep`). Don't construct `PostboxProcessing` with a custom context in production code — the default is almost always right.
-
 ## Testing Patterns
 
 **Contract test** — implement `PostboxContract` against any storage backend to get the full behavioural suite (idempotent store, claim/lease/reclaim semantics, status transitions, response retention rules) for free:
@@ -109,14 +96,23 @@ class InMemoryPostboxTest : PostboxContract() {
 }
 ```
 
-**Driving `PostboxProcessing` deterministically** — use a `TestExecutionContext(timeSource, iterations)` to run the poll loop exactly `iterations` times then stop, instead of racing against real threads:
+**Driving `ScheduledPostboxProcessing` deterministically** — pass a time4k `DeterministicScheduler` as `externalScheduler` (and its `currentTime` as `timeSource`), then advance time manually instead of racing real threads:
 
 ```kotlin
-val processor = PostboxProcessing(transactor, testTarget, context = TestExecutionContext(timeSource, 1), events = StdOutEvents)
-processor.start()
+val scheduler = DeterministicScheduler(Instant.EPOCH)
+val processing = ScheduledPostboxProcessing(
+    transactor, testTarget,
+    pollInterval = Duration.ofSeconds(5),
+    externalScheduler = scheduler,
+    timeSource = scheduler::currentTime,
+    backoffStrategy = { _, _ -> Duration.ofSeconds(1) }   // fixed delay for predictable retries
+)
+processing.start()
+scheduler.runUntilIdle()                      // first poll
+scheduler.tick(Duration.ofSeconds(5))         // next poll
 ```
 
-**Simulating shutdown timing** — `SimulatedExecutionContext(timeSource, shutdownGracePeriod)` models a busy worker via `thread.busyUntil` without real sleeps, letting you assert `stop()`'s grace-period behavior (`context.finished`, elapsed simulated time) precisely.
+Implement `PostboxProcessingContract` to run the shared processing behaviour suite against a scheduler setup.
 
 **Injecting storage failures** — wrap a real `Postbox` in a test-only decorator (see `PostboxFailureInjector`) that fails the next `store()` call, to exercise the "storage failed while intercepting" path through `PostboxHandlers` without touching production code.
 

@@ -65,6 +65,24 @@ openAI.generateImage(
 ).successValue()
 ```
 
+## Decisions
+
+```kotlin
+val decision = openAI.createDecision(
+    model = OpenAIModels.GPT_6_LUNA,
+    input = "Customer message...",
+    questions = listOf(
+        DecisionQuestion.Predicate("is_urgent", "Is the message urgent?"),
+        DecisionQuestion.Choice("team", "Who should handle this?", listOf(DecisionChoice("billing", "Payments"), DecisionChoice("tech"))),
+        DecisionQuestion.Score("anger", "How angry?", listOf(DecisionLevel("Calm"), DecisionLevel("Furious")))
+    )
+).successValue()
+
+decision.answers   // List<DecisionAnswer>: Predicate | Choice | Score | Refusal (match by `name`)
+```
+
+Image input is supported via `DecisionInputMessage(listOf(DecisionInputPart.Image(dataUrl, ImageDetail.low)))`.
+
 ## Models
 
 ```kotlin

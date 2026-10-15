@@ -178,6 +178,7 @@ val safe = PolyFilters.CatchAll(
     onErrorSse = { e -> SseResponse(INTERNAL_SERVER_ERROR) { it.close() } },
     onErrorWs = { e -> WsResponse { it.close() } }
 )
+// onErrorSse also catches exceptions thrown by the SSE consumer itself (after connect), not just during routing
 
 // Apply Security to all protocols at once
 val secured = PolyFilters.Security(mySecurity)

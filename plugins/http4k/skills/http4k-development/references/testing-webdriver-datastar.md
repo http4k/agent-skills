@@ -15,6 +15,9 @@ val driver = DatastarWebDriver(myApp)
 
 // With custom clock (for deterministic testing)
 val driver = DatastarWebDriver(myApp, clock = fixedClock)
+
+// Manual settling: live events are only applied (and the actions they introduce fired) on driver.settle()
+val driver = DatastarWebDriver(myApp, autoSettle = false)
 ```
 
 ## Navigation and Element Interaction
@@ -80,6 +83,16 @@ fun handle(req: Request): Response {
 }
 ```
 
+## Page Load, Relative URLs and Cookies
+
+- `data-init="@get('/init')"` fires when the page loads (and when patched-in elements carrying it appear).
+- Relative action URLs (`@post('done')`) resolve against the current page URL, or its `<base href>` if present.
+- Actions carry the browser's cookies and send `Accept: text/event-stream`.
+
+## Live Event Streams
+
+A `text/event-stream` response that never completes is treated as a live stream: events arriving after the action returns are applied on the next element read, `pageSource`, or `driver.settle()`. With `autoSettle = false` only `settle()` applies them. Navigating away closes the stream.
+
 ## Visibility (data-show)
 
 `data-show="<expr>"` sets `style="display:none"` when the expression is falsy. `element.isDisplayed` reflects this:
@@ -102,7 +115,7 @@ assertThat(driver.findElement(By.id("out")).text, equalTo("count is 2"))
 ## Gotchas
 
 - **In-process only**: HTTP requests go directly to the handler — no network, no real browser.
-- **SSE consumed synchronously**: SSE response streams are consumed and applied before the action returns — test assertions can follow directly.
+- **SSE consumed synchronously**: events already available in an SSE response are applied before the action returns — test assertions can follow directly. For open-ended streams, later events are applied on the next read or `settle()`.
 - **Local signals excluded from transport**: Signal names starting with `_` are never sent to the backend. Use them for UI-only state.
 - **`pageSource` reflects live DOM**: `driver.pageSource` returns the post-patch live document, not the original response body.
 - **Morphing is merge-based**: `patch-elements` uses a morphing strategy — elements are updated in place rather than replaced, preserving focused inputs.

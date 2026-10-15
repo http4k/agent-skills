@@ -90,6 +90,8 @@ Extension point to hook page runtime behaviour into `Http4kWebDriver`. Implement
 ```kotlin
 interface PageBehaviour {
     fun pageLoaded(document: Document) {}
+    fun beforeFind() {}                                 // called before element lookups (e.g. to apply pending updates)
+    fun pageSource(document: Document): String? = null  // override the reported page source
     fun before(event: PageEvent, element: Element): Boolean = false  // return true to suppress default
     fun after(event: PageEvent, element: Element) {}
     fun displayed(element: Element): Boolean? = null  // null → throws FeatureNotImplementedYet
@@ -114,3 +116,13 @@ enum class PageEvent { Click, Submit, SendKeys, Clear }
 - **NoSuchElementException includes selector**: Error messages include which `By` selector failed, making failures easier to diagnose.
 - **Basic auth from URL**: If the current page URL contains userinfo (`user:pass@`), the credentials are applied as Basic Auth headers on subsequent requests.
 - **formaction/formmethod**: Submit buttons with `formaction` or `formmethod` attributes override the parent form's `action` and `method`.
+
+A behaviour can be built from the browser's own handler, so any requests it makes carry the browser's cookies and resolve relative URLs against the current page (and its `<base href>`):
+
+```kotlin
+val driver = Http4kWebDriver(myApp, Clock.systemUTC()) { browserHandler ->
+    object : PageBehaviour {
+        override fun pageLoaded(document: Document) { browserHandler(Request(GET, "things/done")) }
+    }
+}
+```

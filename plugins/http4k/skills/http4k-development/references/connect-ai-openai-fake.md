@@ -46,6 +46,14 @@ val imageUri = response.data.first().url!!
 // URI follows pattern: http://localhost:{port}/{size}.png
 ```
 
+## Decisions
+
+The fake serves `POST /v1/decisions`. By default `FirstOptionAnswerer` picks the first choice/level (and 0.5 for predicates). Supply a `DecisionAnswerer` to control answers, e.g. to simulate refusals or capture input:
+
+```kotlin
+val fake = FakeOpenAI(decisionAnswerer = { input, question -> DecisionAnswer.Refusal(question.name) })
+```
+
 ## Implementing Test Contracts
 
 ```kotlin
