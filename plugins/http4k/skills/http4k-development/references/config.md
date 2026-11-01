@@ -56,8 +56,8 @@ EnvironmentKey.timeout().required("TIMEOUT")        // Timeout (validated non-ne
 // Enum
 EnvironmentKey.enum<MyEnum>().required("MODE")
 
-// Multi-value (comma-separated by default)
-EnvironmentKey.int().multi.required("PORTS")        // List<Int>
+// Multi-value — the separator must be given explicitly
+EnvironmentKey.int().multi(",").required("PORTS")   // List<Int>
 
 // Delegated property
 val MY_PORT by EnvironmentKey.int().of().required()
@@ -123,7 +123,7 @@ env["child.string"]  // "world"
 ## Gotchas
 
 - **Key names are case-insensitive**: `FOO`, `foo`, `Foo` all resolve to the same key. Underscores and dots normalize to hyphens: `FIRST_NAME` → `first-name`.
-- **Multi-value separator**: Default is comma. Values are trimmed. Use `MapEnvironment.from(props, separator = ";")` for custom separators.
+- **Multi-value separator**: Passed per key via `multi(separator)`; values are trimmed. The bare `.multi` property and `Environment.separator` are deprecated (throw at runtime), and `Environment.from`/`MapEnvironment.from` no longer take a `separator`. Single-value keys never split on the separator.
 - **Secret is single-use**: Calling `.use {}` twice throws `IllegalStateException("Cannot read a secret more than once")`.
 - **Port validation**: `Port(65536)` throws `IllegalArgumentException`.
 - **Timeout validation**: Negative durations throw `IllegalArgumentException`.

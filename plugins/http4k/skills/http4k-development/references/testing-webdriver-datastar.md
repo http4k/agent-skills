@@ -18,7 +18,14 @@ val driver = DatastarWebDriver(myApp, clock = fixedClock)
 
 // Manual settling: live events are only applied (and the actions they introduce fired) on driver.settle()
 val driver = DatastarWebDriver(myApp, autoSettle = false)
+
+// Extend or replace parts of the modelled datastar behaviour with plugins
+val driver = DatastarWebDriver(myApp, plugins = listOf(myAttributePlugin, myWatcherPlugin))
 ```
+
+- `AttributePlugin` models a `data-*` attribute (override `name`, plus `initialise` / `render` / `handle`); a plugin with the same name as a built-in replaces it. `render` must not dispatch actions.
+- `WatcherPlugin { element, page -> ... }` is called for every element carried by a `patch-elements` event.
+- `driver.actions()` returns the backend actions the page fired as `ActionResult(method, uri, status)`. Closing or quitting the driver closes the page's open streams.
 
 ## Navigation and Element Interaction
 
@@ -60,7 +67,7 @@ driver.findElement(By.id("btn")).click()
 
 `@get`, `@post`, `@put`, `@patch`, `@delete` expressions in `data-on-*` send signals to the backend:
 
-- **GET** — signals serialised as `?datastar=<json>` query param, with `datastar-request: true` header
+- **GET** — signals serialised as `?datastar=<json>` query param, with the `Datastar-Request: true` header
 - **non-GET** — signals sent as a JSON body (`Content-Type: application/json`)
 
 Local signals (names starting with `_`) are excluded from transport.

@@ -93,7 +93,7 @@ status.redirection            // 300-399
 
 ## Security Notes
 
-- **Decompression bomb protection**: Gzip decompression is limited to 10 MB. Bodies larger than this throw `SizeLimitExceededException`. `RequestFilters.GunZip` catches this and returns `413 REQUEST_ENTITY_TOO_LARGE` automatically.
+- **Decompression bomb protection**: Decompression is limited to 10 MB by default (`maxDecompressedSize`). The server `Compression` filter rejects oversized request bodies with `413 REQUEST_ENTITY_TOO_LARGE`.
 - **Timing-safe auth comparison**: `ServerFilters.BasicAuth` and `ServerFilters.BearerAuth` use constant-time comparison for credentials to prevent timing-based attacks. Custom validator lambdas receive the value to compare and can use `secureEquals()` from `http4k-core` for the same protection.
 - **Header sanitization**: `Request.header()`, `Response.header()`, `replaceHeader()`, and `headers()` sanitize header names and values before storing them.
 
@@ -173,16 +173,20 @@ ServerFilters.InitialiseRequestContext(contexts)
 // Catch all exceptions
 ServerFilters.CatchAll { Response(INTERNAL_SERVER_ERROR) }
 
-// GZip — compresses responses, decompresses request bodies
-// Decompression is capped at 10 MB. Exceeding the limit causes GunZip filter
-// to return 413 REQUEST_ENTITY_TOO_LARGE and the server GZip filter to throw
-// SizeLimitExceededException.
-ServerFilters.GZip()
+// Compression — decompresses request bodies and compresses responses with the best
+// ContentEncoding the client accepts (listed in server preference order).
+// Decompression is capped at 10 MB by default (maxDecompressedSize); shouldCompress
+// lets you skip responses. The old ServerFilters.GZip()/GunZip filters are deprecated.
+ServerFilters.Compression(ContentEncoding.Gzip(), ContentEncoding.Deflate())
 ```
 
 ### Built-in Client Filters
 
 ```kotlin
+// Compress requests with the first encoding, ask for and decompress responses in any of them
+// (ClientFilters.Decompression(...) decompresses responses only). Replaces ClientFilters.GZip/AcceptGZip
+ClientFilters.Compression(ContentEncoding.Gzip())
+
 // Set base URI for relative requests
 ClientFilters.SetBaseUriFrom(Uri.of("http://api.example.com"))
 

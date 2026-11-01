@@ -197,6 +197,11 @@ val reported = PolyFilters.ReportTransaction(
 // Events overload — emits HttpEvent/SseEvent/WsEvent
 val reported2 = PolyFilters.ReportTransaction(events)
 
+// Compression for HTTP and SSE together (best ContentEncoding the client accepts)
+val compressed = PolyFilters.Compression(ContentEncoding.Gzip())
+// SSE only: each message is flushed as a compressed chunk
+val sseCompressed = ServerFilters.SseCompression(ContentEncoding.Gzip())
+
 // Combined HTTP CORS + SSE rebind protection + WebSocket rebind protection
 val cors = PolyFilters.CorsAndRebindProtection(corsPolicy)
 ```
@@ -326,6 +331,7 @@ Setting `X-Accel-Buffering: no` is required when an Nginx reverse proxy sits in 
 - **SSE is server-push only**: `Sse.send()` pushes to client. There is no client-to-server message channel (use HTTP for that).
 - **SSE binary data is base64-encoded**: SSE is text-only. Binary data passed to `SseMessage.Data(InputStream)` is automatically base64-encoded.
 - **SSE multiline data**: Data containing newlines is automatically split into multiple `data:` lines per the SSE spec.
+- **SSE compression is server-dependent**: `SseCompression` is supported by the Jetty, Jetty 11, Undertow and Helidon servers; others send the stream uncompressed.
 - **Filter order matters**: Filters nest like HTTP filters — `first.then(second).then(handler)` means `first` processes the request first.
 - **WsStatus equality uses code only**: Two `WsStatus` values with the same code but different descriptions are equal.
 - **WsResponse subprotocol**: Set via `WsResponse("protocol") { ws -> ... }` or `ServerFilters.SetWsSubProtocol("protocol")`.

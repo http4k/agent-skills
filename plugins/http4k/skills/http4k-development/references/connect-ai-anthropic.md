@@ -21,7 +21,7 @@ val anthropic = AnthropicAI.Http(
 
 ```kotlin
 val result = anthropic.messageCompletion(
-    model = AnthropicModels.Claude_Sonnet_4_5,
+    model = AnthropicModels.Claude_Sonnet_5_5,
     messages = listOf(Message.User("What is Kotlin?")),
     maxTokens = MaxTokens.of(1024),
     systemPrompt = SystemPrompt.of("You are helpful"),  // optional
@@ -106,7 +106,7 @@ Responses carry thinking back as `Content.Thinking(thinking, signature)` or `Con
 
 ```kotlin
 val count = anthropic.countTokens(
-    AnthropicModels.Claude_Sonnet_4_5,
+    AnthropicModels.Claude_Sonnet_5_5,
     listOf(Message.User(Content.Text("how many tokens is this?")))
 ).successValue()
 
@@ -117,7 +117,7 @@ println(count.input_tokens)
 
 ```kotlin
 anthropic.getModels()                       // paged list of ModelInfo
-anthropic.getModel(AnthropicModels.Claude_Sonnet_4_5)
+anthropic.getModel(AnthropicModels.Claude_Sonnet_5_5)
 
 val uploaded = anthropic.uploadFile(FileName.of("report.pdf"), inputStream, contentType).successValue()
 anthropic.getFile(uploaded.id)
@@ -140,8 +140,8 @@ anthropic.deleteMessageBatch(batch.id)
 ## Models
 
 ```kotlin
-AnthropicModels.Claude_Opus_4_1
-AnthropicModels.Claude_Sonnet_4_5
+AnthropicModels.Claude_Opus_5_5
+AnthropicModels.Claude_Sonnet_5_5
 AnthropicModels.Claude_Haiku_4_5
 ```
 
