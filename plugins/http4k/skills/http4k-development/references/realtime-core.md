@@ -195,6 +195,8 @@ val reported = PolyFilters.ReportTransaction(
 )
 
 // Events overload — emits HttpEvent/SseEvent/WsEvent
+// Sse/Ws reports are recorded when the response is returned (WsTransaction.status == WsStatus.OPEN).
+// Pass onCloseFn to ResponseFilters.ReportSseTransaction/ReportWsTransaction to be told when the stream closes (either side, once only).
 val reported2 = PolyFilters.ReportTransaction(events)
 
 // Compression for HTTP and SSE together (best ContentEncoding the client accepts)
@@ -326,6 +328,7 @@ Setting `X-Accel-Buffering: no` is required when an Nginx reverse proxy sits in 
 
 ## Gotchas
 
+- **Unmatched SSE bypasses route filters**: An SSE request that no route matches is answered as unhandled without passing through the route's filters, so filters (auth, reporting) only see requests that matched.
 - **WsClient close semantics**: Closing with `WsStatus.NORMAL` ends the `received()` sequence. Closing with any other status throws `ClosedWebsocket(status)` when reading.
 - **Messages don't echo**: A client does NOT receive messages it sends. Messages flow one direction through each side's handlers.
 - **SSE is server-push only**: `Sse.send()` pushes to client. There is no client-to-server message channel (use HTTP for that).

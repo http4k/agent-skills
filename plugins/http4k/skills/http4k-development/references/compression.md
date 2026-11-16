@@ -25,7 +25,7 @@ val client = ClientFilters.Compression(ContentEncoding.Brotli()).then(JavaHttpCl
 ServerFilters.SseCompression(ContentEncoding.Zstd())
 PolyFilters.Compression(ContentEncoding.Zstd(), ContentEncoding.Gzip())
 
-ContentEncoding.Brotli(quality = 4)   // 0 (fastest) – 11 (smallest)
+ContentEncoding.Brotli(quality = 4, window = 18)   // quality 0 (fastest) – 11 (smallest); window 10–24 (log2 of encoder look-back, bounds encoder memory)
 ContentEncoding.Zstd(level = 3)       // 1 (fastest) – 22 (smallest)
 ```
 

@@ -1,7 +1,7 @@
 {
   "name": "http4k",
   "description": "http4k Kotlin HTTP toolkit - Server as a Function",
-  "version": "6.63.0.0-ee",
+  "version": "6.64.0.0-ee",
   "author": {
     "name": "http4k",
     "url": "https://http4k.org"

@@ -104,6 +104,8 @@ interface PageBehaviour {
 enum class PageEvent { Click, Submit, SendKeys, Clear }
 ```
 
+`PageBehaviour` also has `dragged(event: DragEvent, element: Element)` (no-op by default). Fire a drag event with `driver.drag(DragEvent.Drop, By.id("target"))` (`DragEvent`: `Enter`, `Over`, `Leave`, `Drop`). It throws `ElementNotInteractableException` if the behaviour reports the element isn't displayed.
+
 `JSoupWebElement.isDisplayed()` delegates to `behaviour.displayed()`. Without a `PageBehaviour`, calling `isDisplayed` throws `FeatureNotImplementedYet`. See `http4k-testing-webdriver-datastar` for a full implementation.
 
 ## Gotchas

@@ -18,6 +18,10 @@ Response(OK).datastarElements(
     useViewTransition = true             // only included in event when `true`
 )
 
+// Navigate the browser (Datastar's fetch follows redirects without moving the page, so answer with a script instead)
+Response(OK).datastarGoTo(Uri.of("/done"), selector = Selector.of("#placeholder"))
+Element.goTo(Uri.of("/done"))   // the underlying <script> Element; the target must exist to append into
+
 // Update reactive signals/store
 Response(OK).datastarSignals(
     Signal.of("""{"count": 42}"""),

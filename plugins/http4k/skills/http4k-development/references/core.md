@@ -423,6 +423,16 @@ val combined = StdOutEvents.and(metricsEvents)
 // Add metadata
 events(UserCreated("123") + ("source" to "api") + ("region" to "us-east"))
 
+// Read/write metadata on an Event with the EventMetadata lens
+val tenant = EventMetadata.required("tenant")
+val tagged = UserCreated("123").with(tenant of "acme")   // wraps in a MetadataEvent
+val value = tenant(tagged)
+
+// Selective passing/dropping of events (typed variants also match events wrapped in MetadataEvent)
+val onlyUsers = EventFilters.Accept<UserCreated> { it.userId.isNotEmpty() }.then(events)
+val noNoise = EventFilters.Reject<HttpEvent.Incoming>().then(events)
+val byPredicate = EventFilters.Accept { it is UserCreated }.then(events)
+
 // Filter pipeline
 val filtered = EventFilter { next -> { event ->
     next(event + ("timestamp" to Clock.System.now()))
